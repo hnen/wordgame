@@ -22,7 +22,6 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         with:
           args: container:push -a wordgame-tsoha web
-              - name: release
       - name: release
         uses: actions/heroku@master
         env:
