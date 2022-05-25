@@ -7,8 +7,7 @@ app = Flask(__name__, static_url_path='/static')
 app.secret_key = '715517'
 app.debug = True
 
-#app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:***REMOVED***@localhost:5432'
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 
 db = SQLAlchemy(app)
 
