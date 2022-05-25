@@ -1,0 +1,15 @@
+body 
+{
+    background-color: #272727;
+    color: #FF858D;
+    font-family: Sans-serif;
+}
+
+.letter
+{
+    color: black;
+    font-size: 54px;
+    width: 54px;
+    text-align: center; 
+    text-transform:uppercase;
+}

@@ -15,7 +15,7 @@ def game():
 
 @app.route('/action_game_start', methods=['POST'])
 def game_start():
-    response = { 'word': 'aurinko' }
+    response = { 'word_length': 5 }
     return jsonify( response )
 
 
