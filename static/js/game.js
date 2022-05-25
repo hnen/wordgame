@@ -13,8 +13,9 @@ function submitWord()
         letter.prop( "disabled", true );
     }
 
-    game_state.line_number++;
 
+
+    game_state.line_number++;
     startGame();
 }
 
@@ -76,7 +77,7 @@ function startGame()
 {
     $.post( "/action_game_start" )
         .done( function( data ) {
-            $( "#text_game_status" ).text( "word_length: " + data.word_length );
+            $( "#text_game_status" ).text( "word_length: " + data.word_length + ", word: " + data.word );
             createInputs( game_state.line_number, data.word_length );
         } )
         .fail( function() {
