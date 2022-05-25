@@ -36,13 +36,11 @@ function createInputs(line, length)
         $("#" + id)
             // On entering letter, move to next field (unless emptied)
             .on( 'input', 
-                function(id, next_id, is_last_letter) { 
+                function(next_id, is_last_letter) { 
                     return function()
                     { 
-                        curr = $("#" + id);
                         next = $("#" + next_id);
-
-                        if ( !(curr.val() === "") )
+                        if ( !($(this).val() === "") )
                         {
                             if ( !is_last_letter )
                                 next.focus();
@@ -50,20 +48,19 @@ function createInputs(line, length)
                                 submitWord();
                         }
                     } 
-                } ( id, next_id, is_last_letter ) 
+                } ( next_id, is_last_letter ) 
             )
             // On backspace, move to previous
             .keydown(
-                function(id, prev_id) {
+                function(prev_id) {
                     return function(e) 
                     {
-                        curr = $("#" + id);
                         prev = $("#" + prev_id);
-                        if ((e.which == 8 || e.which == 46) && curr.val() =='') {
+                        if ((e.which == 8 || e.which == 46) && $(this).val() =='') {
                             prev.focus();
                         }
                     } 
-                } (id, prev_id)
+                } (prev_id)
             );
 
         letter_inputs.push( $("#" + id ) );
