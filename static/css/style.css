@@ -13,3 +13,18 @@ body
     text-align: center; 
     text-transform:uppercase;
 }
+
+.letter_wrong
+{
+    background-color: red;
+}
+
+.letter_hint
+{
+    background-color: yellow;
+}
+
+.letter_correct
+{
+    background-color: green;
+}

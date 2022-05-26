@@ -21,6 +21,24 @@ function submitWord()
     $.post( "/game/guess", { 'guess': guess } )
         .done( function( data ) {
             game_state.line_number++;
+
+            for ( var i = 0; i < curr_letters.length; i++ )
+            {
+                letter = curr_letters[i]
+                if ( data.result[i] === "WRONG" )
+                {
+                    letter.addClass( "letter_wrong" )
+                }
+                else if ( data.result[i] === "HINT" )
+                {
+                    letter.addClass( "letter_hint" )
+                }
+                else if ( data.result[i] === "CORRECT" )
+                {
+                    letter.addClass( "letter_correct" )
+                }                
+            }
+        
             $( "#text_game_status" ).text( JSON.stringify(data) );
             createInputs( game_state.line_number, data.word_length );
         } )
