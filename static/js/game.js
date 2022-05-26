@@ -9,12 +9,16 @@ var game_state =
 function submitWord()
 {
     curr_letters = game_state.letter_inputs[game_state.line_number];
+
+    guess = "";
+
     for ( const letter of curr_letters )
     {
         letter.prop( "disabled", true );
+        guess += letter.val();
     }
     
-    $.post( "/game/guess" )
+    $.post( "/game/guess", { 'guess': guess } )
         .done( function( data ) {
             game_state.line_number++;
             $( "#text_game_status" ).text( JSON.stringify(data) );
