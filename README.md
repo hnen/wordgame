@@ -1,5 +1,11 @@
 # Sanapeli
 
+## Miten pelata?
+
+Peliä voi kokeilla osoitteessa https://wordgame-tsoha.herokuapp.com/
+
+## Kuvaus
+
 Sovellus on internetissä suositusta sanapelistä inspiraation saanut peli. Pelaajalle annetaan arvattavaksi sanoja, jotka tulee arvata viidellä yrittämällä mahdollisimman nopeasti. Aluksi pelaaja näkee vain sanan pituuden, ja jokaisen arvausyrityksen jälkeen hänpelaaja saa vihjeitä seuraavaa arvausta varten. Vihjeet näyttävät mitkä kirjaimet arvauksesta olivat oikein oikealla paikalla, mitkä kirjaimet löytyy sanasta mutta ovat väärällä paikalla ja mitä kirjaimia ei löydy sanasta ollenkaan. Peliaikaa on kaksi minuuttia, ja tuona aikana pelaajan tulee arvata niin monta sanaa kuin ehtii. Pelissä on eri teemoja, johon kuuluvia sanoja voi arvuutella.
 
 ## Sovelluksen ominaisuuksia:
