@@ -25,7 +25,7 @@ def game():
 class GameSession:
     KEY_WORD_ID = "game_word_id"
 
-    def is_active():
+    def is_active(self):
         return (self.KEY_WORD_ID in session) and session[self.KEY_WORD_ID] > 0
 
     def get_word_id(self):
@@ -47,7 +47,7 @@ class Word:
     word = ""
 
     def __init__(self, word_id : int, word : str):
-        self.word_id = word_id
+        self.id = word_id
         self.word = word
 
 class UserDao:
@@ -68,7 +68,18 @@ def game_start():
     word = dao.select_random_word()
     game_session.start(word.id)
     
-    response = { 'word_length': len(word.word), 'word': word.word }
+    response = { 'word_length': len(word.word), 'word': word.word, 'id': word.id }
     return jsonify( response )
 
+
+@app.route('/game/guess', methods=['POST'])
+def game_guess():
+    game_session = GameSession()
+    dao = UserDao()
+
+    if not game_session.is_active():
+        return "Game not active", 400
+    
+    response = { 'word_id': game_session.get_word_id() }
+    return jsonify( response )
 

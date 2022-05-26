@@ -1,6 +1,7 @@
 
 var game_state =
 {
+    'word_length': -1,
     'line_number': 0,
     'letter_inputs': []
 };
@@ -12,19 +13,26 @@ function submitWord()
     {
         letter.prop( "disabled", true );
     }
-
-
-
-    game_state.line_number++;
-    startGame();
+    
+    $.post( "/game/guess" )
+        .done( function( data ) {
+            game_state.line_number++;
+            $( "#text_game_status" ).text( JSON.stringify(data) );
+            createInputs( game_state.line_number, data.word_length );
+        } )
+        .fail( function() {
+            $( "#text_game_status" ).text( "Jotain meni vikaan." );
+        } )
 }
 
-function createInputs(line, length)
+function createInputs(line)
 {
     first_id = "input_letter_" + line + "_" + 0;
     
     letter_inputs = [];
     game_state.letter_inputs.push(letter_inputs);
+
+    length = game_state.word_length
 
     for ( var i = 0; i < length; i++ )
     {
@@ -77,7 +85,8 @@ function startGame()
 {
     $.post( "/game/start" )
         .done( function( data ) {
-            $( "#text_game_status" ).text( "word_length: " + data.word_length + ", word: " + data.word );
+            $( "#text_game_status" ).text( JSON.stringify(data) );
+            game_state.word_length = data.word_length
             createInputs( game_state.line_number, data.word_length );
         } )
         .fail( function() {
