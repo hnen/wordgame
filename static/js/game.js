@@ -75,7 +75,7 @@ function createInputs(line, length)
 
 function startGame()
 {
-    $.post( "/action_game_start" )
+    $.post( "/game/start" )
         .done( function( data ) {
             $( "#text_game_status" ).text( "word_length: " + data.word_length + ", word: " + data.word );
             createInputs( game_state.line_number, data.word_length );

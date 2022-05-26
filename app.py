@@ -56,10 +56,11 @@ class UserDao:
         return Word( tp["id"], tp["word"] )
 
     def select_random_word(self) -> Word:
-        result = db.session.execute("SELECT * FROM word LIMIT 1")
+        # TODO: This method is slow, should come up with something more efficient.
+        result = db.session.execute("SELECT * FROM word ORDER BY RANDOM() LIMIT 1")
         return self._unpack_word(result)
 
-@app.route('/action_game_start', methods=['POST'])
+@app.route('/game/start', methods=['POST'])
 def game_start():
     game_session = GameSession()
     dao = UserDao()
