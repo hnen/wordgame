@@ -89,8 +89,6 @@ def evaluate_guess(guess : str, word : str):
         word_c = word[i].lower()
         char_map[word_c] += 1
 
-    print(str(char_map))
-
     for i in range(len(word)):
         word_c = word[i].lower()
         if word[i].lower() == guess[i].lower():
