@@ -20,6 +20,10 @@ jobs:
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login 
+      - name: Deploy SECRET_KEY
+        env: 
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku config:set SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}
       - name: Migrate DB
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
