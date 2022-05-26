@@ -24,10 +24,6 @@ jobs:
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku config:set SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}
-      - name: Set FLASK_APP
-        env: 
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku config:set FLASK_APP=app
       - name: Migrate DB
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
