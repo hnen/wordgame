@@ -1,50 +1,88 @@
 
-var game_state =
+class Game
 {
-    'word_length': -1,
-    'line_number': 0,
-    'letter_inputs': []
-};
+    constructor()
+    {
+        this.word_length = -1;
+        this.line_number = 0;
+        this.letter_inputs = [];
+    }
 
-function submitWord()
+    getCurrentInputs()
+    {
+        return this.letter_inputs[this.line_number];
+    }
+
+    colorizeInputsWithResults(result)
+    {
+        curr_letters = this.getCurrentInputs();
+        for ( var i = 0; i < curr_letters.length; i++ )
+        {
+            let letter = curr_letters[i]
+            if ( result[i] === "WRONG" )
+            {
+                letter.addClass( "letter_wrong" )
+            }
+            else if ( result[i] === "HINT" )
+            {
+                letter.addClass( "letter_hint" )
+            }
+            else if ( result[i] === "CORRECT" )
+            {
+                letter.addClass( "letter_correct" )
+            }                
+        }        
+    }
+
+}
+
+let game_state = new Game();
+
+function postStart()
+{
+    $.post( "/game/start" )
+        .done( function( data ) {
+            $( "#text_game_status" ).text( JSON.stringify(data) );
+            startNewWord(data.word_length)
+        } )
+        .fail( onFailure )
+}
+
+function postGuess()
+{
+    $.post( "/game/guess", { 'guess': getGuess() } )
+        .done( function( data ) {
+            curr_letters = game_state.getCurrentInputs();
+            game_state.colorizeInputsWithResults(data.result)
+            game_state.line_number++;
+            $( "#text_game_status" ).text( JSON.stringify(data) );
+            createInputs( game_state.line_number, data.word_length );
+        } )
+        .fail( onFailure )
+}
+
+function onFailure()
+{
+    $( "#text_game_status" ).text( "Jotain meni vikaan." );
+}
+
+function startNewWord(word_length)
+{
+    game_state.word_length = word_length
+    createInputs( game_state.line_number, word_length );
+}
+
+function getGuess()
 {
     curr_letters = game_state.letter_inputs[game_state.line_number];
-
     guess = "";
-
     for ( const letter of curr_letters )
     {
         letter.prop( "disabled", true );
         guess += letter.val();
     }
-    
-    $.post( "/game/guess", { 'guess': guess } )
-        .done( function( data ) {
-            game_state.line_number++;
 
-            for ( var i = 0; i < curr_letters.length; i++ )
-            {
-                letter = curr_letters[i]
-                if ( data.result[i] === "WRONG" )
-                {
-                    letter.addClass( "letter_wrong" )
-                }
-                else if ( data.result[i] === "HINT" )
-                {
-                    letter.addClass( "letter_hint" )
-                }
-                else if ( data.result[i] === "CORRECT" )
-                {
-                    letter.addClass( "letter_correct" )
-                }                
-            }
-        
-            $( "#text_game_status" ).text( JSON.stringify(data) );
-            createInputs( game_state.line_number, data.word_length );
-        } )
-        .fail( function() {
-            $( "#text_game_status" ).text( "Jotain meni vikaan." );
-        } )
+    return guess;
 }
 
 function createInputs(line)
@@ -76,7 +114,7 @@ function createInputs(line)
                             if ( !is_last_letter )
                                 next.focus();
                             else
-                                submitWord();
+                                postGuess();
                         }
                     } 
                 } ( next_id, is_last_letter ) 
@@ -103,18 +141,6 @@ function createInputs(line)
 
 }
 
-function startGame()
-{
-    $.post( "/game/start" )
-        .done( function( data ) {
-            $( "#text_game_status" ).text( JSON.stringify(data) );
-            game_state.word_length = data.word_length
-            createInputs( game_state.line_number, data.word_length );
-        } )
-        .fail( function() {
-            $( "#text_game_status" ).text( "Jotain meni vikaan." );
-        } )
 
-}
 
-$( document ).ready(startGame);
+$( document ).ready(postStart);
