@@ -39,17 +39,17 @@ class LetterInputs
         this._getCurrLine()[0].focus();        
     }
 
-    
+    lockGuess()
+    {
+        for ( const letter of this._getCurrLine() )
+            letter.prop( "disabled", true );
+    }
+
     getGuess()
     {
-        let curr_letters = this._getCurrLine()
-
         let guess = "";
-        for ( const letter of curr_letters )
-        {
-            letter.prop( "disabled", true );
+        for ( const letter of this._getCurrLine() )
             guess += letter.val();
-        }
 
         return guess;
     }    
@@ -79,6 +79,7 @@ class LetterInputs
 
     _funcLetterInput(next_id, is_last_letter)
     {
+        let inputs = this;
         return function()
         { 
             let next = $("#" + next_id);
@@ -87,7 +88,10 @@ class LetterInputs
                 if ( !is_last_letter )
                     next.focus();
                 else
-                    postGuess();
+                {
+                    inputs.lockGuess();
+                    postGuess( inputs.getGuess() );
+                }
             }
         };
     }
@@ -140,12 +144,21 @@ class Game
     constructor()
     {
         this.word_length = -1;
-        this.line_number = 0;
-        //this.letter_inputs = [];
         this.letter_inputs = new LetterInputs();
     }
 
-    colorizeInputsWithResults(result)
+    startNewWord(word_length)
+    {
+        this.word_length = word_length
+        this.startNewGuess()
+    }
+
+    startNewGuess()
+    {
+        this.letter_inputs.createNewLine( this.word_length );
+    }
+
+    colorizeGuessWithResults(result)
     {
         for ( var i = 0; i < result.length; i++ )
         {
@@ -155,26 +168,27 @@ class Game
 
 }
 
-let game_state = new Game();
+let game = new Game();
 
 function postStart()
 {
     $.post( "/game/start" )
         .done( function( data ) {
             $( "#text_game_status" ).text( JSON.stringify(data) );
-            startNewWord(data.word_length)
+
+            game.startNewWord(data.word_length)
         } )
         .fail( onFailure )
 }
 
-function postGuess()
+function postGuess( guess )
 {
-    $.post( "/game/guess", { 'guess': game_state.letter_inputs.getGuess() } )
+    $.post( "/game/guess", { 'guess': guess } )
         .done( function( data ) {
-            game_state.colorizeInputsWithResults(data.result)
-            game_state.line_number++;
             $( "#text_game_status" ).text( JSON.stringify(data) );
-            game_state.letter_inputs.createNewLine( game_state.word_length );
+
+            game.colorizeGuessWithResults(data.result)
+            game.startNewGuess()
         } )
         .fail( onFailure )
 }
@@ -183,14 +197,5 @@ function onFailure()
 {
     $( "#text_game_status" ).text( "Jotain meni vikaan." );
 }
-
-function startNewWord(word_length)
-{
-    game_state.word_length = word_length
-    game_state.letter_inputs.createNewLine( word_length );
-}
-
-
-
 
 $( document ).ready(postStart);
