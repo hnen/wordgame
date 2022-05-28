@@ -4,10 +4,6 @@ from .db import Dao, Word
 
 bp = Blueprint('game', __name__, url_prefix='/game', static_folder='static', static_url_path='/static')
 
-@bp.route('/', methods=['GET', 'POST'])
-def game():
-    return render_template( "game.html" )
-
 class GameSession:
     KEY_WORD_ID = "game_word_id"
 
@@ -28,16 +24,43 @@ class GameSession:
     def expire(self):
         session.pop(self.KEY_WORD_ID, None)
 
+@bp.route('/', methods=['GET', 'POST'])
+def game():
+    return render_template( "game.html" )
+
 @bp.route('/start', methods=['POST'])
 def game_start():
     game_session = GameSession()
     dao = Dao()
 
-    word = dao.select_random_word()
-    game_session.start(word.id)
+    word_obj = dao.select_random_word()
+    game_session.start(word_obj.id)
     
-    response = { 'word_length': len(word.word), 'id': word.id }
+    response = { 'word_length': len(word_obj.word), 'id': word_obj.id }
     return jsonify( response )
+
+@bp.route('/guess', methods=['POST'])
+def game_guess():
+    game_session = GameSession()
+    dao = Dao()
+
+    if not game_session.is_active():
+        return "Game not active", 400
+
+    if not 'guess' in request.form:
+        return "Guess not supplied", 400
+
+    guess = request.form['guess']
+    word_obj = dao.get_word( game_session.get_word_id() )
+
+    if len(guess) != len(word_obj.word):
+        return "Guess has invalid length, expected: " + len(word_obj.word), 400
+
+    result = evaluate_guess( guess, word_obj.word )
+
+    response = { 'word_id': game_session.get_word_id(), 'guess': request.form['guess'], 'result': result }
+    return jsonify( response )
+
 
 def evaluate_guess(guess : str, word : str):
     if len(guess) != len(word):
@@ -70,25 +93,3 @@ def evaluate_guess(guess : str, word : str):
 
     return result
     
-
-@bp.route('/guess', methods=['POST'])
-def game_guess():
-    game_session = GameSession()
-    dao = Dao()
-
-    if not game_session.is_active():
-        return "Game not active", 400
-
-    if not 'guess' in request.form:
-        return "Guess not supplied", 400
-
-    guess = request.form['guess']
-    word_obj = dao.get_word( game_session.get_word_id() )
-
-    if len(guess) != len(word_obj.word):
-        return "Guess has invalid length, expected: " + len(word_obj.word), 400
-
-    result = evaluate_guess( guess, word_obj.word )
-
-    response = { 'word_id': game_session.get_word_id(), 'guess': request.form['guess'], 'result': result }
-    return jsonify( response )
