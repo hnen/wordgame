@@ -6,6 +6,54 @@ class LetterInputs
         this._lines = []
     }
 
+    setLetterResult(letter_index, result)
+    {
+        let letter = this._getLetter(this._getCurrLineIndex(), letter_index);
+        if ( result === "WRONG" )
+        {
+            letter.addClass( "letter_wrong" )
+        }
+        else if ( result === "HINT" )
+        {
+            letter.addClass( "letter_hint" )
+        }
+        else if ( result === "CORRECT" )
+        {
+            letter.addClass( "letter_correct" )
+        }
+    }    
+
+    createNewLine(length)
+    {
+        let first_id = this._getId( this._getCurrLineIndex(), 0 );    
+        this._pushNewLine();
+    
+        for ( var i = 0; i < length; i++ )
+        {
+            let is_last_letter = i == length - 1;
+            this._createLetter(is_last_letter);
+        }
+        
+        $("#game_area").append("<br>");
+    
+        this._getCurrLine()[0].focus();        
+    }
+
+    
+    getGuess()
+    {
+        let curr_letters = this._getCurrLine()
+
+        let guess = "";
+        for ( const letter of curr_letters )
+        {
+            letter.prop( "disabled", true );
+            guess += letter.val();
+        }
+
+        return guess;
+    }    
+
     _getInputElements(line_number)
     {
         return this._lines[line_number];
@@ -85,54 +133,6 @@ class LetterInputs
         return this._lines[this._getCurrLineIndex()]
     }
 
-    setLetterResult(letter_index, result)
-    {
-        let letter = this._getLetter(this._getCurrLineIndex(), letter_index);
-        if ( result === "WRONG" )
-        {
-            letter.addClass( "letter_wrong" )
-        }
-        else if ( result === "HINT" )
-        {
-            letter.addClass( "letter_hint" )
-        }
-        else if ( result === "CORRECT" )
-        {
-            letter.addClass( "letter_correct" )
-        }
-    }    
-
-    createNewLine(length)
-    {
-        let first_id = this._getId( this._getCurrLineIndex(), 0 );    
-        this._pushNewLine();
-    
-        for ( var i = 0; i < length; i++ )
-        {
-            let is_last_letter = i == length - 1;
-            this._createLetter(is_last_letter);
-        }
-        
-        $("#game_area").append("<br>");
-    
-        this._getCurrLine()[0].focus();        
-    }
-
-    
-    getGuess()
-    {
-        let curr_letters = this._getCurrLine()
-
-        let guess = "";
-        for ( const letter of curr_letters )
-        {
-            letter.prop( "disabled", true );
-            guess += letter.val();
-        }
-
-        return guess;
-    }
-
 }
 
 class Game
@@ -143,11 +143,6 @@ class Game
         this.line_number = 0;
         //this.letter_inputs = [];
         this.letter_inputs = new LetterInputs();
-    }
-
-    getCurrentInputs()
-    {
-        return this.letter_inputs._getInputElements( this.line_number );
     }
 
     colorizeInputsWithResults(result)
