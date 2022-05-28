@@ -1,8 +1,9 @@
 
 class LetterInputs
 {
-    constructor()
+    constructor(funcOnGuess)
     {
+        this.funcOnGuess = funcOnGuess;
         this._lines = []
     }
 
@@ -81,16 +82,19 @@ class LetterInputs
     {
         let inputs = this;
         return function()
-        { 
-            let next = $("#" + next_id);
-            if ( !($(this).val() === "") )
+        {
+            let letter_is_empty = $(this).val() === "";
+            if ( !letter_is_empty )
             {
                 if ( !is_last_letter )
+                {
+                    let next = $("#" + next_id);
                     next.focus();
+                }
                 else
                 {
                     inputs.lockGuess();
-                    postGuess( inputs.getGuess() );
+                    inputs.funcOnGuess( inputs.getGuess() );
                 }
             }
         };
@@ -141,10 +145,10 @@ class LetterInputs
 
 class Game
 {
-    constructor()
+    constructor(funcOnGuess)
     {
         this.word_length = -1;
-        this.letter_inputs = new LetterInputs();
+        this.letter_inputs = new LetterInputs(funcOnGuess);
     }
 
     startNewWord(word_length)
@@ -168,7 +172,7 @@ class Game
 
 }
 
-let game = new Game();
+let game = new Game( postGuess );
 
 function postStart()
 {
