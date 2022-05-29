@@ -2,14 +2,26 @@ body
 {
     background-color: #0D1321;
     color: #F0EBD8;
-    font-family: Sans-serif;
+    font-family: 'Lato', sans-serif;
+    padding-top: 5rem;
 }
 
+h1
+{
+    font-size: 100px;
+}
+
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+  
 .letter
 {
     color: black;
     font-size: 54px;
-    width: 54px;
+    width: 74px;
+    height: 74px;
     text-align: center; 
     text-transform:uppercase;
 }
