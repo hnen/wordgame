@@ -1,7 +1,7 @@
 body 
 {
-    background-color: #0D1321;
-    color: #F0EBD8;
+    background-color: #28190E;
+    color: #FBF5F3;
     font-family: 'Lato', sans-serif;
     padding-top: 5rem;
 }
@@ -20,6 +20,7 @@ h1
 {
     color: black;
     font-size: 54px;
+    background-color: #FBF5F3;
     width: 74px;
     height: 74px;
     text-align: center; 
@@ -28,15 +29,20 @@ h1
 
 .letter_wrong
 {
-    background-color: red;
+    /* background-color: #D64045; */
+    background-color: #BF4342;
+
 }
 
 .letter_hint
 {
-    background-color: yellow;
+    /* background-color: #EDF060; */
+    background-color: #FFB20F;
+    
 }
 
 .letter_correct
 {
-    background-color: green;
+    /* background-color: #1B998B; */
+    background-color: #5CF64A;
 }
