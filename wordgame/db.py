@@ -57,7 +57,7 @@ class Dao:
     def get_themes(self) -> []:
         query = """ SELECT t.*, c.word_count FROM theme t 
                     LEFT JOIN (
-                       SELECT theme_id, count(theme_id) word_count FROM word_theme c GROUP BY c.theme_id
+                       SELECT theme_id, count(theme_id) word_count FROM word_theme GROUP BY theme_id
                     ) AS c 
                     ON t.id = c.theme_id"""
         result = db.session.execute(query)
