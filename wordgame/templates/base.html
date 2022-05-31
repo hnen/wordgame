@@ -3,24 +3,33 @@
 <title>Sanapeli</title>
 <script src="static/js/jquery-3.6.0.min.js"></script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="static/css/bootstrap.min.css">
 <link rel="stylesheet" href="static/css/style.css">
 </head>
 
-<body>
-    <main role="main" class="container">
-        <div class="starter-template">
-            <section class="content">    
-                <header>
-                    <h1>Sanapeli</h1>
+<body class="text-white bg-dark">
+    <main role="main">
+        <div class="container">
+                <header class="text-white border-bottom pt-3 mb-4">
+                    <nav style="--bs-breadcrumb-divider: '»';"aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class ="h2 breadcrumb-item">
+                                Sanapeli
+                            </li>
+                            <!--
+                            <li class ="h2 breadcrumb-item">
+                                Ylläpito
+                            </li>
+                            -->
+                        </ol>
+                    </nav>
                 </header>
+        </div>
+
+        <div class="container">
+            <section class="content">    
                 {% block content %}{% endblock %}
             </section>
-
         </div> 
     </main>
 
