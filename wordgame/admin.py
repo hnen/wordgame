@@ -21,7 +21,7 @@ def theme(theme_id):
 def add():
     dao = Dao()
 
-    if request.form["do_add"] == "on":
+    if "do_add" in request.form and request.form["do_add"] == "on":
         do_add(dao, request.form)
 
     return render_template( "admin_add.html", themes=dao.get_themes() )
