@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block header_breadcrumb %}
+<li class ="h2 breadcrumb-item">
+    Ylläpito
+</li>
+{% endblock %}
+
 {% block content %}
     <p>
         <form action="/admin/add" method="POST"><input type="submit" value="Lisää sanoja"></form>
