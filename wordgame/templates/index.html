@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <p> <form action="/game" method="POST"><input type="submit" value="Aloita Peli"></form> </p>
+  <p> 
+    <form action="/game" method="POST"><input type="submit" value="Aloita Peli"></form> <br>
+    <form action="/admin" method="POST"><input type="submit" value="Ylläpito"></form>
+   </p>
 {% endblock %}
 

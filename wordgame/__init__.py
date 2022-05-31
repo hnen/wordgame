@@ -3,6 +3,7 @@ from flask import render_template
 from os import getenv
 
 from . import game
+from . import admin
 from . import db
 
 def create_app(test_config=None):
@@ -18,6 +19,7 @@ def create_app(test_config=None):
         return render_template( "index.html" )
 
     app.register_blueprint(game.bp)
+    app.register_blueprint(admin.bp)
 
     return app
 
