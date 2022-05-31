@@ -1,6 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from flask import render_template
-from .db import Dao
+from .db import Dao, Theme
 
 bp = Blueprint('admin', __name__, url_prefix='/admin', static_folder='static', static_url_path='/static')
 
@@ -18,4 +18,14 @@ def theme(theme_id):
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
-    return render_template( "admin.html" )
+    dao = Dao()
+
+    if request.form["do_add"] == "on":
+        do_add(dao, request.form)
+
+    return render_template( "admin_add.html", themes=dao.get_themes() )
+
+def do_add(dao, form):
+
+    print("Adding:", form)
+

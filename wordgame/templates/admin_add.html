@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block header_breadcrumb %}
+<li class ="h2 breadcrumb-item">
+    Ylläpito
+</li>
+<li class ="h2 breadcrumb-item">
+    Lisää sanoja
+</li>
+{% endblock %}
+
+
+{% block content %}
+
+<form action="add" method="post">
+
+    <div class="dropdown mb-3 mt-3">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Valitse teemoja
+        </button>
+
+        <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton1">    
+                {% for theme in themes: %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="{{'theme_' ~ theme.id}}" id="{{'theme_' ~ theme.id}}">
+                    <label class="form-check-label" for="{{'theme_' ~ theme.id}}">
+                        {{ theme.name }}
+                    </label>
+                </div>
+                {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mb-4">
+        <label for="word_list" class="form-label">Sanalista</label>
+        <textarea class="form-control" id="word_list" name="word_list" rows="10"></textarea>
+    </div>
+
+    <input type="hidden" value="on" name="do_add">
+
+    <button type="submit" class="btn btn-primary">Lisää</button>
+
+</form>
+
+{% endblock %}
+
