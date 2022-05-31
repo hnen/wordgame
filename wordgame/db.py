@@ -26,10 +26,12 @@ class Word:
 class Theme:
     id = -1
     name = ""
+    word_count = 0
 
-    def __init__(self, theme_id : int, name : str):
+    def __init__(self, theme_id : int, name : str, word_count : int):
         self.id = theme_id
         self.name = name
+        self.word_count = word_count
 
 class Dao:
     def _unpack_word(self, result) -> Word:
@@ -40,7 +42,7 @@ class Dao:
         ret = []
         for tp in result.fetchall():            
             mapping = tp._mapping
-            ret.append(Theme(mapping["id"], mapping["theme_name"]))
+            ret.append(Theme(mapping["id"], mapping["theme_name"], mapping["word_count"]))
         return ret
 
     def select_random_word(self) -> Word:
@@ -53,7 +55,12 @@ class Dao:
         return self._unpack_word(result)
 
     def get_themes(self) -> []:
-        result = db.session.execute("SELECT * FROM theme")
+        query = """ SELECT t.*, c.word_count FROM theme t 
+                    LEFT JOIN (
+                       SELECT theme_id, count(theme_id) word_count FROM word_theme c GROUP BY c.theme_id
+                    ) AS c 
+                    ON t.id = c.theme_id"""
+        result = db.session.execute(query)
         return self._unpack_themes(result)
 
 

@@ -6,7 +6,8 @@ bp = Blueprint('admin', __name__, url_prefix='/admin', static_folder='static', s
 
 @bp.route('/', methods=['GET', 'POST'])
 def admin():
-    return render_template( "admin.html" )
+    dao = Dao()
+    return render_template( "admin.html", themes=dao.get_themes() )
 
 @bp.route('/themes', methods=['GET', 'POST'])
 def themes():
