@@ -33,7 +33,11 @@
 
     <div class="mb-4">
         <label for="word_list" class="form-label">Sanalista</label>
-        <textarea class="form-control" id="word_list" name="word_list" rows="10"></textarea>
+        <textarea class="form-control" id="word_list" name="word_list" rows="10">
+            {%- for word in rejected_words: -%}
+                {{word ~ '\n'}}
+            {%- endfor -%}
+        </textarea>
     </div>
 
     <input type="hidden" value="on" name="do_add">
