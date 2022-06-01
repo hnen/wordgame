@@ -38,6 +38,8 @@ def do_add(dao, form):
     print("ACCEPTED: ", str(accepted))
     print("REJECTED: ", str(rejected))
 
+    dao.add_words( accepted )
+
     return accepted, rejected
     
 

@@ -63,5 +63,11 @@ class Dao:
         result = db.session.execute(query)
         return self._unpack_themes(result)
 
+    def add_words(self, word_list):
+        for word in word_list:
+            query = "INSERT INTO word VALUES ( DEFAULT, :word )"
+            db.session.execute( query, {"word": word} )
+        db.session.commit()
+
 
 
