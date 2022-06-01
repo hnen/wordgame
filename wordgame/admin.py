@@ -22,10 +22,12 @@ def theme(theme_id):
 def add():
     dao = Dao()
 
+    accepted, rejected = [], []
+
     if "do_add" in request.form and request.form["do_add"] == "on":
         accepted, rejected = do_add(dao, request.form)
 
-    return render_template( "admin_add.html", themes=dao.get_themes(), rejected_words = rejected )
+    return render_template( "admin_add.html", themes=dao.get_themes(), rejected_words = rejected, accepted_words = accepted )
 
 def do_add(dao, form):
     print("Adding:", form)

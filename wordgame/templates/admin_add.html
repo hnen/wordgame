@@ -12,6 +12,15 @@
 
 {% block content %}
 
+<ul class="add_word_status">
+    {% if accepted_words|length > 0 %}
+    <li>Lisättiin {{accepted_words|length}} sanaa.</li>
+    {%endif%}
+    {% if rejected_words|length > 0 %}
+    <li>Hylättiin {{rejected_words|length}} sanaa. Katso hylätyt sanat alta. Tarkista että sana on pituudeltaan 3-8 merkkiä, ja että siinä ei ole mitään erikoismerkkejä. Vain suomalaiset aakkoset sallitaan.</li>
+    {%endif%}
+</ul>
+
 <form action="add" method="post">
 
     <div class="dropdown mb-3 mt-3">
@@ -32,7 +41,11 @@
     </div>
 
     <div class="mb-4">
-        <label for="word_list" class="form-label">Sanalista</label>
+        <label for="word_list" class="form-label">Sanalista
+        {% if rejected_words|length > 0 %}
+        (sisältää hylätyt sanat)
+        {% endif %}
+        </label>
         <textarea class="form-control" id="word_list" name="word_list" rows="10">
             {%- for word in rejected_words: -%}
                 {{word ~ '\n'}}
