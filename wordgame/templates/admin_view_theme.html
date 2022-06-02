@@ -8,7 +8,7 @@
     Teemat
 </li>
 <li class ="h2 breadcrumb-item">
-    Teema
+    {{theme.name}}
 </li>
 {% endblock %}
 
@@ -24,7 +24,7 @@
             {% for word in words: %}
             <tr>
                 <th class="align-middle" scope="row">
-                    asdasa
+                    {{word.word}}
                 </th>
                 <td><button type="button" class="btn btn-light">Poista</button></td>
             </tr>

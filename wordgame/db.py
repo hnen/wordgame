@@ -38,6 +38,17 @@ class Dao:
         tp = result.fetchone()._mapping
         return Word( tp["id"], tp["word"] )
 
+    def _unpack_words(self, result) -> []:
+        ret = []
+        for tp in result.fetchall():            
+            mapping = tp._mapping
+            ret.append(Word( tp["id"], tp["word"]))
+        return ret        
+
+    def _unpack_theme(self, result) -> Word:
+        tp = result.fetchone()._mapping
+        return Theme(tp["id"], tp["theme_name"], tp["word_count"])
+
     def _unpack_themes(self, result) -> []:
         ret = []
         for tp in result.fetchall():            
@@ -54,14 +65,30 @@ class Dao:
         result = db.session.execute("SELECT * FROM word WHERE id = :id", {"id": word_id})
         return self._unpack_word(result)
 
-    def get_themes(self) -> []:
-        query = """ SELECT t.*, c.word_count FROM theme t 
+    def _theme_query(self):
+        return """ SELECT t.*, c.word_count FROM theme t 
                     LEFT JOIN (
                        SELECT theme_id, count(theme_id) word_count FROM word_theme GROUP BY theme_id
                     ) AS c 
                     ON t.id = c.theme_id"""
-        result = db.session.execute(query)
+
+    def get_themes(self) -> []:
+        result = db.session.execute(self._theme_query())
         return self._unpack_themes(result)
+
+    def get_theme(self, theme_id) -> []:
+        query = f'{self._theme_query()} WHERE id=:id'
+        result = db.session.execute(query, {"id": theme_id})
+        return self._unpack_theme(result)
+
+    def get_words(self, theme_id) -> []:
+        query = """ SELECT * FROM word w
+                    RIGHT JOIN (
+                        SELECT * FROM word_theme WHERE theme_id = :theme_id
+                    ) as wt
+                    ON w.id = wt.word_id"""
+        result = db.session.execute(query, {"theme_id": theme_id} )
+        return self._unpack_words(result)
 
     def add_words(self, word_list, theme_ids):
         for word in word_list:

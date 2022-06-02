@@ -16,7 +16,8 @@ def themes():
 
 @bp.route('/themes/<theme_id>', methods=['GET', 'POST'])
 def theme(theme_id):
-    return render_template( "admin_view_theme.html" )
+    dao = Dao()
+    return render_template( "admin_view_theme.html", words=dao.get_words(theme_id), theme=dao.get_theme(theme_id) )
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
