@@ -1,7 +1,7 @@
 DO
 $do$
 
-DECLARE schema_version INT := 2; /* INCREMENT THIS VALUE TO RECREATE TABLES */
+DECLARE schema_version INT := 3; /* INCREMENT THIS VALUE TO RECREATE TABLES */
 
 BEGIN
 
@@ -32,7 +32,8 @@ IF NOT EXISTS (SELECT version FROM schema WHERE version >= schema_version) THEN
         word_id INT,
         theme_id INT,
         FOREIGN KEY (word_id) REFERENCES word(id),
-        FOREIGN KEY (theme_id) REFERENCES theme(id)
+        FOREIGN KEY (theme_id) REFERENCES theme(id),
+        UNIQUE(word_id, theme_id)
     );
 
     INSERT INTO word VALUES ( DEFAULT, 'avain' );
