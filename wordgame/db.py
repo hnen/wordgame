@@ -63,11 +63,21 @@ class Dao:
         result = db.session.execute(query)
         return self._unpack_themes(result)
 
-    def add_words(self, word_list):
+    def add_words(self, word_list, theme_ids):
         for word in word_list:
-            query = "INSERT INTO word VALUES ( DEFAULT, :word )"
-            db.session.execute( query, {"word": word} )
+            query1 = "INSERT INTO word VALUES ( DEFAULT, :word ) ON CONFLICT DO NOTHING"
+            db.session.execute( query1, {"word": word} )
+            for theme_id in theme_ids:
+                query2 = """ INSERT INTO word_theme VALUES (
+                    DEFAULT,
+                    ( SELECT id FROM word WHERE word=:word ),
+                    :theme_id
+                )  ON CONFLICT DO NOTHING """
+                db.session.execute( query2, {"word": word, "theme_id": theme_id} )
         db.session.commit()
+
+
+
 
 
 

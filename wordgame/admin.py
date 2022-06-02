@@ -33,12 +33,14 @@ def do_add(dao, form):
     print("Adding:", form)
 
     word_list = parse_words(form["word_list"])
+    theme_ids = parse_theme_ids(form)
     accepted, rejected = validate_words(word_list)
 
     print("ACCEPTED: ", str(accepted))
     print("REJECTED: ", str(rejected))
+    print("theme ids: ", str(theme_ids))
 
-    dao.add_words( accepted )
+    dao.add_words( accepted, theme_ids )
 
     return accepted, rejected
     
@@ -69,4 +71,13 @@ def parse_words(words_raw):
     w = map( str.strip, w )
     w = map( str.lower, w )
     return list( w )
+
+def parse_theme_ids(form):
+    ret = []
+    for (key, value) in form.items():
+        if value == "on":
+            match = re.search( "theme_\d+", key )
+            if match:
+                ret.append(int(match.group()[6:]))
+    return ret
 
