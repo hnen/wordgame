@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header_breadcrumb %}
+<li class ="h2 breadcrumb-item">
+    Ylläpito
+</li>
+<li class ="h2 breadcrumb-item">
+    Teemat
+</li>
+<li class ="h2 breadcrumb-item">
+    Teema
+</li>
+{% endblock %}
+
+{% block content %}
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th class="th-lg">Sana</th>
+                <th class="th-lg"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for word in words: %}
+            <tr>
+                <th class="align-middle" scope="row">
+                    asdasa
+                </th>
+                <td><button type="button" class="btn btn-light">Poista</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}
+
