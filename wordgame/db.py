@@ -23,6 +23,9 @@ class Word:
         self.id = word_id
         self.word = word
 
+    def __repr__ (self):
+        return f'Word: {self.id}; {self.word}'
+
 class Theme:
     id = -1
     name = ""
@@ -89,6 +92,12 @@ class Dao:
                     ON w.id = wt.word_id"""
         result = db.session.execute(query, {"theme_id": theme_id} )
         return self._unpack_words(result)
+
+
+    def remove_word_from_theme(self, theme_id, word_id):
+        query = "DELETE FROM word_theme WHERE theme_id=:theme_id AND word_id=:word_id"
+        db.session.execute( query, {"word_id": word_id, "theme_id": theme_id} )
+        db.session.commit()
 
     def add_words(self, word_list, theme_ids):
         for word in word_list:

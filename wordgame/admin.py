@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, redirect, url_for
 from flask import render_template
 from .db import Dao, Theme
 import re
@@ -18,6 +18,13 @@ def themes():
 def theme(theme_id):
     dao = Dao()
     return render_template( "admin_view_theme.html", words=dao.get_words(theme_id), theme=dao.get_theme(theme_id) )
+
+
+@bp.route('/themes/<theme_id>/remove/<word_id>', methods=['GET', 'POST'])
+def theme_remove_word(theme_id, word_id):
+    dao = Dao()
+    dao.remove_word_from_theme(theme_id, word_id)
+    return redirect(url_for('admin.theme', theme_id=theme_id))
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
