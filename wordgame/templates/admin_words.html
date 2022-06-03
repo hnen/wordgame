@@ -18,7 +18,7 @@
     <table class="table table-dark table-hover">
         <thead>
             <tr>
-                <th class="th-lg"></th>
+                <th class="th-lg">Poista</th>
                 <th class="th-lg">Sana</th>
                 {% for theme in themes: %}
                 <td class="th-lg">{{theme.name}}</th>
@@ -44,7 +44,7 @@
                     </label>
                 </td>
                 {% endfor %}
-                <td class="align-middle"><form action="words/remove/{{word.id}}" method="POST"><button type="submit" class="btn btn-danger">Poista</button></form></td>
+                <!-- <td class="align-middle"><form action="words/remove/{{word.id}}" method="POST"><button type="submit" class="btn btn-danger">Poista</button></form></td> -->
             </tr>
             </a>
             {% endfor %}
