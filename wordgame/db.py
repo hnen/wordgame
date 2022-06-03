@@ -116,7 +116,14 @@ class Dao:
         query = "INSERT INTO theme VALUES ( DEFAULT, :theme_name )"
         db.session.execute( query, {"theme_name": theme_name} )
         db.session.commit()
+        
+    def remove_theme(self, theme_id):
+        query1 = "DELETE FROM word_theme WHERE theme_id=:theme_id"
+        query2 = "DELETE FROM theme WHERE id=:theme_id"
 
+        db.session.execute( query1, {"theme_id": theme_id} )
+        db.session.execute( query2, {"theme_id": theme_id} )
+        db.session.commit()
 
 
 

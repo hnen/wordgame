@@ -32,6 +32,12 @@ def theme_add():
 
     return redirect(url_for('admin.themes', error=error))
 
+@bp.route('/themes/<theme_id>/remove', methods=['GET', 'POST'])
+def theme_remove(theme_id):
+    dao = Dao()
+    dao.remove_theme(theme_id)
+    return redirect(url_for('admin.themes'))
+
 @bp.route('/themes/<theme_id>', methods=['GET', 'POST'])
 def theme(theme_id):
     dao = Dao()
