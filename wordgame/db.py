@@ -82,7 +82,7 @@ class Dao:
         return self._unpack_theme(result)
 
     def get_words(self, theme_id) -> []:
-        query = """ SELECT * FROM word w
+        query = """ SELECT w.id, w.word FROM word w
                     RIGHT JOIN (
                         SELECT * FROM word_theme WHERE theme_id = :theme_id
                     ) as wt
