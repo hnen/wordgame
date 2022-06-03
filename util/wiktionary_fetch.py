@@ -1,4 +1,4 @@
-import requests, json, sys, re
+import requests, json, sys, re, random
 
 url = "https://fi.wiktionary.org/w/api.php?action=query&format=json&list=categorymembers&cmlimit=500&cmtitle=Category:Suomen_kielen_substantiivit&cmprop=title"
 x = requests.get(url)
@@ -9,10 +9,13 @@ cmcont = p["continue"]["cmcontinue"] if "continue" in p else None
 words = [(lambda x: x["title"])(x) for x in p["query"]["categorymembers"]]
 
 def accept(word):
-    if len(word) < 4 or len(word) > 7:
+    if len(word) < 4 or len(word) > 8:
         return False
 
     if re.search( "[^a-zåäö]", word ):
+        return False
+
+    if random.random() > 0.1:
         return False
 
     return True
