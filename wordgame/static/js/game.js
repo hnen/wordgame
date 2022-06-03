@@ -149,12 +149,30 @@ class Game
     {
         this.word_length = -1;
         this.letter_inputs = new LetterInputs(funcOnGuess);
+        this.time_left_ms = -1;
+        this.timer_interval_id = -1;
     }
 
     startNewWord(word_length)
     {
         this.word_length = word_length
         this.startNewGuess()
+    }
+
+    updateTimeLeft(time_left_ms)
+    {
+        this.time_left_ms = time_left_ms;
+        
+        let time_value = time_left_ms < 0 ? 0 : (time_left_ms + 900);
+        let time_left_s = Math.floor(time_value / 1000) % 60
+        let time_left_min = Math.floor(time_value / 1000 / 60);
+        let time_left_str = String(time_left_min).padStart(2, "0") + ":" + String(time_left_s).padStart(2, "0");
+        $("#timer").text( time_left_str );
+    }
+
+    timePassed(time_passed_ms)
+    {
+        this.updateTimeLeft(this.time_left_ms - time_passed_ms);
     }
 
     startNewGuess()
@@ -180,7 +198,8 @@ function postStart()
     $.post( "/game/start", { "theme_id": theme_id } )
         .done( function( data ) {
             $( "#text_game_status" ).text( JSON.stringify(data) );
-
+            game.updateTimeLeft(data.time_left_ms)
+            setInterval( function() { game.timePassed(100) }, 100 );
             game.startNewWord(data.word_length)
         } )
         .fail( onFailure )
@@ -191,7 +210,7 @@ function postGuess( guess )
     $.post( "/game/guess", { 'guess': guess } )
         .done( function( data ) {
             $( "#text_game_status" ).text( JSON.stringify(data) );
-
+            game.updateTimeLeft(data.time_left_ms)
             game.colorizeGuessWithResults(data.result)
             game.startNewGuess()
         } )
