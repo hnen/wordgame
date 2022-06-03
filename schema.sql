@@ -1,7 +1,7 @@
 DO
 $do$
 
-DECLARE schema_version INT := 3; /* INCREMENT THIS VALUE TO RECREATE TABLES */
+DECLARE schema_version INT := 4; /* INCREMENT THIS VALUE TO RECREATE TABLES */
 
 BEGIN
 
@@ -35,38 +35,6 @@ IF NOT EXISTS (SELECT version FROM schema WHERE version >= schema_version) THEN
         FOREIGN KEY (theme_id) REFERENCES theme(id),
         UNIQUE(word_id, theme_id)
     );
-
-    INSERT INTO word VALUES ( DEFAULT, 'avain' );
-    INSERT INTO word VALUES ( DEFAULT, 'apina' );
-    INSERT INTO word VALUES ( DEFAULT, 'kirja' );
-    INSERT INTO word VALUES ( DEFAULT, 'aurinko' );
-    INSERT INTO word VALUES ( DEFAULT, 'zorro' );
-    INSERT INTO word VALUES ( DEFAULT, 'tarzan' );
-
-    INSERT INTO theme VALUES ( DEFAULT, 'Helpot Sanat' );
-    INSERT INTO theme VALUES ( DEFAULT, 'Kovikset' );
-
-    INSERT INTO word_theme VALUES ( DEFAULT, 
-        ( SELECT id FROM word WHERE word='avain' ), 
-        ( SELECT id FROM theme WHERE theme_name='Helpot Sanat' )  );
-    INSERT INTO word_theme VALUES ( DEFAULT, 
-        ( SELECT id FROM word WHERE word='apina' ), 
-        ( SELECT id FROM theme WHERE theme_name='Helpot Sanat' )  );
-    INSERT INTO word_theme VALUES ( DEFAULT, 
-        ( SELECT id FROM word WHERE word='kirja' ), 
-        ( SELECT id FROM theme WHERE theme_name='Helpot Sanat' )  );
-    INSERT INTO word_theme VALUES ( DEFAULT, 
-        ( SELECT id FROM word WHERE word='apina' ), 
-        ( SELECT id FROM theme WHERE theme_name='Kovikset' )  );
-    INSERT INTO word_theme VALUES ( DEFAULT, 
-        ( SELECT id FROM word WHERE word='aurinko' ), 
-        ( SELECT id FROM theme WHERE theme_name='Helpot Sanat' )  );
-    INSERT INTO word_theme VALUES ( DEFAULT, 
-        ( SELECT id FROM word WHERE word='zorro' ), 
-        ( SELECT id FROM theme WHERE theme_name='Kovikset' )  );
-    INSERT INTO word_theme VALUES ( DEFAULT, 
-        ( SELECT id FROM word WHERE word='tarzan' ), 
-        ( SELECT id FROM theme WHERE theme_name='Kovikset' )  );
 
 END IF;
 
