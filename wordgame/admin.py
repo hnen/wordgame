@@ -91,7 +91,7 @@ def validate_theme(theme):
     if length < 3 or length > 32:
         return False
 
-    if re.search( "[^a-zåäö !?,]", theme ):
+    if re.search( "[^a-zåäöA-ZÅÄÖ0-9 !?,]", theme ):
         return False
 
     return True
