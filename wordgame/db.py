@@ -77,9 +77,10 @@ class Dao:
             ret.append({ "theme_id": mapping["theme_id"], "word_id": mapping["word_id"] })
         return ret
 
-    def select_random_word(self) -> Word:
+    def select_random_word(self, theme_id) -> Word:
         # TODO: This method is slow, should come up with something more efficient.
-        result = db.session.execute("SELECT * FROM word ORDER BY RANDOM() LIMIT 1")
+        query = "SELECT w.* FROM word w RIGHT JOIN (SELECT * FROM word_theme WHERE theme_id=:theme_id) AS wt ON wt.word_id = w.id ORDER BY RANDOM() LIMIT 1"
+        result = db.session.execute(query, {"theme_id": theme_id})
         return self._unpack_word(result)
 
     def get_word(self, word_id : int) -> Word:

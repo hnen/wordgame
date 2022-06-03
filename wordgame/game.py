@@ -6,6 +6,7 @@ bp = Blueprint('game', __name__, url_prefix='/game', static_folder='static', sta
 
 class GameSession:
     KEY_WORD_ID = "game_word_id"
+    KEY_THEME_ID = "game_theme_id"
 
     def is_active(self):
         return (self.KEY_WORD_ID in session) and session[self.KEY_WORD_ID] > 0
@@ -18,23 +19,29 @@ class GameSession:
     def set_word_id(self, id : int):
         session[self.KEY_WORD_ID] = id
 
-    def start(self, word_id):
+    def set_theme_id(self, id : int):
+        session[self.KEY_THEME_ID] = id
+
+    def start(self, theme_id, word_id):
+        self.set_theme_id(theme_id)
         self.set_word_id(word_id)
 
     def expire(self):
         session.pop(self.KEY_WORD_ID, None)
+        session.pop(self.KEY_THEME_ID, None)
 
-@bp.route('/', methods=['GET', 'POST'])
-def game():
-    return render_template( "game.html" )
+@bp.route('/<theme_id>', methods=['GET', 'POST'])
+def game(theme_id):
+    return render_template( "game.html", theme_id=theme_id )
 
 @bp.route('/start', methods=['POST'])
 def game_start():
     game_session = GameSession()
     dao = Dao()
-
-    word_obj = dao.select_random_word()
-    game_session.start(word_obj.id)
+    
+    theme_id = request.form["theme_id"]
+    word_obj = dao.select_random_word(theme_id)
+    game_session.start(theme_id, word_obj.id)
     
     response = { 'word_length': len(word_obj.word), 'id': word_obj.id }
     return jsonify( response )
@@ -71,6 +78,9 @@ def evaluate_guess(guess : str, word : str):
     char_map = {}
     for c in range(ord('a'), ord('z') + 1):
         char_map[chr(c)] = 0
+    char_map['ä'] = 0
+    char_map['ö'] = 0
+    char_map['å'] = 0
 
     for i in range(len(word)):
         word_c = word[i].lower()

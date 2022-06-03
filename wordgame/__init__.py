@@ -4,6 +4,8 @@ from os import getenv
 
 from . import game
 from . import admin
+from . import index
+
 from . import db
 
 def create_app(test_config=None):
@@ -14,10 +16,7 @@ def create_app(test_config=None):
 
     db.init(app)
 
-    @app.route('/')
-    def index():
-        return render_template( "index.html" )
-
+    app.register_blueprint(index.bp)
     app.register_blueprint(game.bp)
     app.register_blueprint(admin.bp)
 

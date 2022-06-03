@@ -176,7 +176,8 @@ let game = new Game( postGuess );
 
 function postStart()
 {
-    $.post( "/game/start" )
+    theme_id = $('#theme_id')[0].value;
+    $.post( "/game/start", { "theme_id": theme_id } )
         .done( function( data ) {
             $( "#text_game_status" ).text( JSON.stringify(data) );
 
