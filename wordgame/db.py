@@ -111,6 +111,11 @@ class Dao:
                 )  ON CONFLICT DO NOTHING """
                 db.session.execute( query2, {"word": word, "theme_id": theme_id} )
         db.session.commit()
+    
+    def add_theme(self, theme_name):
+        query = "INSERT INTO theme VALUES ( DEFAULT, :theme_name )"
+        db.session.execute( query, {"theme_name": theme_name} )
+        db.session.commit()
 
 
 

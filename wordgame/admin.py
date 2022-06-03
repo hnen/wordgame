@@ -12,13 +12,30 @@ def admin():
 @bp.route('/themes', methods=['GET', 'POST'])
 def themes():
     dao = Dao()
-    return render_template( "admin_themes.html", themes=dao.get_themes() )
+
+    error = None
+    if "error" in request.args:
+        error = request.args["error"]
+
+    return render_template( "admin_themes.html", themes=dao.get_themes(), error=error )
+
+@bp.route('/themes/add', methods=['POST'])
+def theme_add():
+    dao = Dao()
+
+    theme_name = request.form["theme_name"]
+    error = ""
+    if not validate_theme(theme_name):
+        error = "Teeman nimi ei kelpaa"
+    else:
+        dao.add_theme( theme_name )
+
+    return redirect(url_for('admin.themes', error=error))
 
 @bp.route('/themes/<theme_id>', methods=['GET', 'POST'])
 def theme(theme_id):
     dao = Dao()
     return render_template( "admin_view_theme.html", words=dao.get_words(theme_id), theme=dao.get_theme(theme_id) )
-
 
 @bp.route('/themes/<theme_id>/remove/<word_id>', methods=['GET', 'POST'])
 def theme_remove_word(theme_id, word_id):
@@ -62,7 +79,17 @@ def validate_word(word):
         return False
 
     return True
-    
+
+def validate_theme(theme):
+    length = len(theme)
+    if length < 3 or length > 32:
+        return False
+
+    if re.search( "[^a-zåäö !?,]", theme ):
+        return False
+
+    return True
+
 
 def validate_words(word_list):
     rejected = []
