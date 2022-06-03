@@ -40,7 +40,7 @@
                 {% for theme in themes: %}
                 <td class="align-middle">
                     <label>
-                        <input class="form-check-input" type="checkbox" value="" id={{'word_' ~ word.id ~ '_theme_' ~ theme.id }} name={{'word_' ~ word.id ~ '_theme_' ~ theme.id }} >
+                        <input class="form-check-input" type="checkbox" value="" id="{{'word_' ~ word.id ~ '_theme_' ~ theme.id }}" name={{'word_' ~ word.id ~ '_theme_' ~ theme.id }} >
                     </label>
                 </td>
                 {% endfor %}
@@ -67,7 +67,20 @@
         }
 
         $(document).ready(function() {
-            $(':checkbox').change(function() {
+
+            $.get('words/word_themes')
+                .done( function(data) {
+                    for ( const word_theme of data.word_themes )
+                    {
+                        $("#word_" + word_theme.word_id + "_theme_" + word_theme.theme_id)[0].checked = true;
+                    }
+                } );
+
+            $(':checkbox').change(function() {     
+
+                if ( !this.id.startsWith("word_") )
+                    return;
+
                 id_parts = this.id.split("_");
                 word_id = id_parts[1]
                 theme_id = id_parts[3]

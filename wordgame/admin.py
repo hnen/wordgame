@@ -62,6 +62,11 @@ def word_remove_theme():
     dao.remove_word_from_theme( theme_id, word_id )
     return jsonify({})
 
+@bp.route('/words/word_themes', methods=['GET'])
+def word_themes():
+    dao = Dao()    
+    return jsonify({"word_themes": dao.get_word_themes_dict()})
+
 @bp.route('/themes/add', methods=['POST'])
 def theme_add():
     dao = Dao()

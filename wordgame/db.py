@@ -15,6 +15,17 @@ def init(app):
 
     db = SQLAlchemy(app)
 
+class WordTheme:
+    word_id = -1
+    theme_id = -1
+
+    def __init__(self, theme_id : int, word_id : int):
+        self.word_id = word_id
+        self.theme_id = theme_id
+        
+    def toJson(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
+
 class Word:
     id = -1
     word = ""
@@ -59,6 +70,13 @@ class Dao:
             ret.append(Theme(mapping["id"], mapping["theme_name"], mapping["word_count"]))
         return ret
 
+    def _unpack_word_themes_dict(self, result) -> []:
+        ret = []
+        for tp in result.fetchall():            
+            mapping = tp._mapping
+            ret.append({ "theme_id": mapping["theme_id"], "word_id": mapping["word_id"] })
+        return ret
+
     def select_random_word(self) -> Word:
         # TODO: This method is slow, should come up with something more efficient.
         result = db.session.execute("SELECT * FROM word ORDER BY RANDOM() LIMIT 1")
@@ -78,6 +96,10 @@ class Dao:
     def get_themes(self) -> []:
         result = db.session.execute(self._theme_query())
         return self._unpack_themes(result)
+
+    def get_word_themes_dict(self) -> []:
+        result = db.session.execute("SELECT * FROM word_theme")
+        return self._unpack_word_themes_dict(result)
 
     def get_theme(self, theme_id) -> []:
         query = f'{self._theme_query()} WHERE id=:id'
