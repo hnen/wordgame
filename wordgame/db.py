@@ -93,6 +93,10 @@ class Dao:
         result = db.session.execute(query, {"theme_id": theme_id} )
         return self._unpack_words(result)
 
+    def get_all_words(self) -> []:
+        query = """ SELECT id, word FROM word"""
+        result = db.session.execute(query)
+        return self._unpack_words(result)
 
     def remove_word_from_theme(self, theme_id, word_id):
         query = "DELETE FROM word_theme WHERE theme_id=:theme_id AND word_id=:word_id"
@@ -125,7 +129,14 @@ class Dao:
         db.session.execute( query2, {"theme_id": theme_id} )
         db.session.commit()
 
+        
+    def remove_word(self, word_id):
+        query1 = "DELETE FROM word_theme WHERE word_id=:word_id"
+        query2 = "DELETE FROM word WHERE id=:word_id"
 
+        db.session.execute( query1, {"word_id": word_id} )
+        db.session.execute( query2, {"word_id": word_id} )
+        db.session.commit()
 
 
 

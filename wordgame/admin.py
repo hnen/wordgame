@@ -19,6 +19,25 @@ def themes():
 
     return render_template( "admin_themes.html", themes=dao.get_themes(), error=error )
 
+
+@bp.route('/words', methods=['GET', 'POST'])
+def words():
+    dao = Dao()
+
+    error = None
+    if "error" in request.args:
+        error = request.args["error"]
+
+    return render_template( "admin_words.html", themes=dao.get_themes(), words=dao.get_all_words(), error=error )
+
+
+@bp.route('/words/remove/<word_id>', methods=['GET', 'POST'])
+def word_remove(word_id):
+    dao = Dao()
+    dao.remove_word(word_id)
+    return redirect(url_for('admin.words'))
+
+
 @bp.route('/themes/add', methods=['POST'])
 def theme_add():
     dao = Dao()
