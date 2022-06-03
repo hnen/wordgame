@@ -1,5 +1,5 @@
 from flask import Blueprint, request, redirect, url_for
-from flask import render_template
+from flask import render_template, jsonify
 from .db import Dao, Theme
 import re
 
@@ -45,6 +45,22 @@ def word_remove_multiple():
     dao.remove_words(word_ids)
     return redirect(url_for('admin.words'))
 
+
+@bp.route('/words/add_theme', methods=['POST'])
+def word_add_theme():
+    dao = Dao()
+    word_id = int(request.form["word_id"])
+    theme_id = int(request.form["theme_id"])
+    dao.add_word_to_theme( theme_id, word_id )
+    return jsonify({})
+
+@bp.route('/words/remove_theme', methods=['POST'])
+def word_remove_theme():
+    dao = Dao()
+    word_id = int(request.form["word_id"])
+    theme_id = int(request.form["theme_id"])
+    dao.remove_word_from_theme( theme_id, word_id )
+    return jsonify({})
 
 @bp.route('/themes/add', methods=['POST'])
 def theme_add():

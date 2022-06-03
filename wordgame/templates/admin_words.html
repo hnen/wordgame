@@ -52,5 +52,41 @@
 
     </table>
 
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body text-dark">
+          Tallennettu
+        </div>
+      </div>
+    </div>    
+
+    <script>
+        function onFailure()
+        {
+            alert( "Jotain meni vikaan." );
+        }
+
+        $(document).ready(function() {
+            $(':checkbox').change(function() {
+                id_parts = this.id.split("_");
+                word_id = id_parts[1]
+                theme_id = id_parts[3]
+                if(this.checked) 
+                {                            
+                    $.post( 'words/add_theme', { 'word_id' : word_id, 'theme_id': theme_id } )
+                        .fail( function(cb) { return function() { onFailure(); cb.checked = false; }; }(this) )
+                        .done( function(r) {  $('.toast').toast('show'); } )
+                }
+                else
+                {
+                    $.post( 'words/remove_theme', { 'word_id': word_id, 'theme_id': theme_id } )
+                        .fail( function(cb) { return function() { onFailure(); cb.checked = true; }; }(this) )
+                        .done( function(r) {  $('.toast').toast('show'); } )
+                }
+            });
+        })
+    </script>
+
+
 {% endblock %}
 

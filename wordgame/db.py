@@ -103,6 +103,11 @@ class Dao:
         db.session.execute( query, {"word_id": word_id, "theme_id": theme_id} )
         db.session.commit()
 
+    def add_word_to_theme(self, theme_id, word_id):
+        query = "INSERT INTO word_theme VALUES ( DEFAULT, :word_id, :theme_id )"
+        db.session.execute( query, {"word_id": word_id, "theme_id": theme_id} )
+        db.session.commit()
+
     def add_words(self, word_list, theme_ids):
         for word in word_list:
             query1 = "INSERT INTO word VALUES ( DEFAULT, :word ) ON CONFLICT DO NOTHING"
