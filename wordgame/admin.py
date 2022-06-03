@@ -37,6 +37,14 @@ def word_remove(word_id):
     dao.remove_word(word_id)
     return redirect(url_for('admin.words'))
 
+@bp.route('/words/remove', methods=['GET', 'POST'])
+def word_remove_multiple():
+    dao = Dao()
+    word_ids = parse_selected_words(request.form)
+    print(str(word_ids))
+    dao.remove_words(word_ids)
+    return redirect(url_for('admin.words'))
+
 
 @bp.route('/themes/add', methods=['POST'])
 def theme_add():
@@ -139,5 +147,13 @@ def parse_theme_ids(form):
             match = re.search( "theme_\d+", key )
             if match:
                 ret.append(int(match.group()[6:]))
+    return ret
+
+def parse_selected_words(form):
+    ret = []
+    for (key, value) in form.items():
+        match = re.search( "select_\d+", key )
+        if match:
+            ret.append(int(match.group()[7:]))
     return ret
 

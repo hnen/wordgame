@@ -137,6 +137,15 @@ class Dao:
         db.session.execute( query1, {"word_id": word_id} )
         db.session.execute( query2, {"word_id": word_id} )
         db.session.commit()
+        
+    def remove_words(self, word_ids):
+        for word_id in word_ids:
+            query1 = "DELETE FROM word_theme WHERE word_id=:word_id"
+            query2 = "DELETE FROM word WHERE id=:word_id"
 
+            db.session.execute( query1, {"word_id": word_id} )
+            db.session.execute( query2, {"word_id": word_id} )
+
+        db.session.commit()
 
 
