@@ -103,7 +103,7 @@ def game_guess():
     word_obj = dao.get_word( game_session.get_word_id() )
 
     if len(guess) != len(word_obj.word):
-        return "Guess has invalid length, expected: " + len(word_obj.word), 400
+        return {"status": "invalid_guess"};
 
     result = evaluate_guess( guess, word_obj.word )
 

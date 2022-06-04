@@ -301,6 +301,11 @@ function postGuess( guess )
                     game.startNewGuess(data.correct_points, false)
                 else if ( data.status == "new_word" )
                     game.startNewWord( data.word_length, data.correct_points );
+                else if ( data.status == "invalid_guess" )
+                {
+                    if ( time_left_ms > 0 )
+                        onFailure();
+                }
                 else
                     onFailure();
             }
