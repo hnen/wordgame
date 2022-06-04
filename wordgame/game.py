@@ -5,7 +5,7 @@ import time
 
 bp = Blueprint('game', __name__, url_prefix='/game', static_folder='static', static_url_path='/static')
 
-GAME_DURATION_S = 120
+GAME_DURATION_S = 302
 
 class GameSession:
     KEY_WORD_ID = "game_word_id"
