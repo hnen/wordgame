@@ -29,6 +29,8 @@ class LetterInputs
         let first_id = this._getId( this._getCurrLineIndex(), 0 );    
         this._pushNewLine();
     
+        $("#game_area").prepend( "<div id='line_" + this._getCurrLineIndex() + "'></div>" );
+
         for ( var i = 0; i < length; i++ )
         {
             let is_last_letter = i == length - 1;
@@ -116,7 +118,7 @@ class LetterInputs
         let line = this._getCurrLineIndex();
         let char = this._getCurrLine().length;
         let id = this._getId(line, char);
-        $("#game_area").append( '<input class="letter" type="text" autocomplete="off" id="' + id + '" maxlength="1">' );
+        $("#line_" + line).append( '<input class="letter" type="text" autocomplete="off" id="' + id + '" maxlength="1">' );
         let el = $("#" + id);
 
         let next_id = this._getId(line, char + 1)
