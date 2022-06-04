@@ -212,7 +212,13 @@ function postGuess( guess )
             $( "#text_game_status" ).text( JSON.stringify(data) );
             game.updateTimeLeft(data.time_left_ms)
             game.colorizeGuessWithResults(data.result)
-            game.startNewGuess()
+            if ( data.status == "try_again" )
+                game.startNewGuess()
+            else if ( data.status == "new_word" )
+                game.startNewWord( data.word_length );
+            else
+                onFailure();
+
         } )
         .fail( onFailure )
 }
