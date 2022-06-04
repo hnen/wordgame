@@ -37,7 +37,7 @@ class LetterInputs
             this._createLetter(is_last_letter);
         }
         
-        $("#game_area").append("<br>");
+        $("#line_" + this._getCurrLineIndex()).append( "<div id='status_line_"+this._getCurrLineIndex()+"'></div>" );
     
         this._getCurrLine()[0].focus();        
     }
@@ -56,6 +56,12 @@ class LetterInputs
 
         return guess;
     }    
+    
+    setLineStatus(status_str)
+    {
+        $("#status_line_" + this._getCurrLineIndex()).text(status_str);
+    }
+
 
     _getInputElements(line_number)
     {
@@ -153,12 +159,13 @@ class Game
         this.letter_inputs = new LetterInputs(funcOnGuess);
         this.time_left_ms = -1;
         this.timer_interval_id = -1;
+        this.points = -1;
     }
 
-    startNewWord(word_length)
+    startNewWord(word_length, correct_points)
     {
         this.word_length = word_length
-        this.startNewGuess()
+        this.startNewGuess(correct_points)
     }
 
     updateTimeLeft(time_left_ms)
@@ -172,14 +179,21 @@ class Game
         $("#timer").text( time_left_str );
     }
 
+    updatePoints(points)
+    {
+        this.points = points;
+        $("#points").text(points);
+    }
+
     timePassed(time_passed_ms)
     {
         this.updateTimeLeft(this.time_left_ms - time_passed_ms);
     }
 
-    startNewGuess()
+    startNewGuess(correct_points)
     {
         this.letter_inputs.createNewLine( this.word_length );
+        this.letter_inputs.setLineStatus( "+" + correct_points );
     }
 
     colorizeGuessWithResults(result)
@@ -201,8 +215,9 @@ function postStart()
         .done( function( data ) {
             $( "#text_game_status" ).text( JSON.stringify(data) );
             game.updateTimeLeft(data.time_left_ms)
+            game.updatePoints(data.points)
             setInterval( function() { game.timePassed(100) }, 100 );
-            game.startNewWord(data.word_length)
+            game.startNewWord(data.word_length, data.correct_points)
         } )
         .fail( onFailure )
 }
@@ -213,11 +228,12 @@ function postGuess( guess )
         .done( function( data ) {
             $( "#text_game_status" ).text( JSON.stringify(data) );
             game.updateTimeLeft(data.time_left_ms)
+            game.updatePoints(data.points)
             game.colorizeGuessWithResults(data.result)
             if ( data.status == "try_again" )
-                game.startNewGuess()
+                game.startNewGuess(data.correct_points)
             else if ( data.status == "new_word" )
-                game.startNewWord( data.word_length );
+                game.startNewWord( data.word_length, data.correct_points );
             else
                 onFailure();
 

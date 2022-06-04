@@ -11,6 +11,8 @@ class GameSession:
     KEY_WORD_ID = "game_word_id"
     KEY_THEME_ID = "game_theme_id"
     KEY_START_TIME = "game_start_time"
+    KEY_GUESS_COUNT = "game_guess_count"
+    KEY_POINTS = "game_points"
 
     def is_active(self):
         return (self.KEY_WORD_ID in session) and session[self.KEY_WORD_ID] > 0
@@ -26,8 +28,20 @@ class GameSession:
     def set_theme_id(self, id : int):
         session[self.KEY_THEME_ID] = id
 
+    def set_guess_count(self, cnt : int):
+        session[self.KEY_GUESS_COUNT] = cnt
+
+    def set_points(self, points : int):
+        session[self.KEY_POINTS] = points
+
     def get_theme_id(self):
         return session[self.KEY_THEME_ID]
+
+    def get_guess_count(self):
+        return session[self.KEY_GUESS_COUNT]
+
+    def get_points(self):
+        return session[self.KEY_POINTS]
 
     def set_start_time(self, time : int):
         session[self.KEY_START_TIME] = time
@@ -39,6 +53,8 @@ class GameSession:
         self.set_theme_id(theme_id)
         self.set_word_id(word_id)
         self.set_start_time(start_time)
+        self.set_guess_count(0)
+        self.set_points(0)
 
     def expire(self):
         session.pop(self.KEY_WORD_ID, None)
@@ -58,7 +74,13 @@ def game_start():
     word_obj = dao.select_random_word(theme_id)
     game_session.start(theme_id, word_obj.id, time.time_ns())
     
-    response = { 'word_length': len(word_obj.word), 'id': word_obj.id, 'time_left_ms': GAME_DURATION_S * 1000 }
+    response = { 
+        'word_length': len(word_obj.word), 
+        'id': word_obj.id, 
+        'time_left_ms': GAME_DURATION_S * 1000,
+        'correct_points': points_for_guess(game_session.get_guess_count()),
+        'points': game_session.get_points()
+    }
     return jsonify( response )
 
 @bp.route('/guess', methods=['POST'])
@@ -81,17 +103,38 @@ def game_guess():
     result = evaluate_guess( guess, word_obj.word )
 
     status = "try_again"
+    got_points = 0
+    correct_points = 0
 
     if is_correct(result):
         theme_id = game_session.get_theme_id()
         word_obj = dao.select_random_word(theme_id)
         game_session.set_word_id( word_obj.id )
+        got_points = points_for_guess( game_session.get_guess_count() )
+        game_session.set_points( game_session.get_points() + got_points )
+        game_session.set_guess_count(0)
         status = "new_word"
+    else:
+        game_session.set_guess_count(game_session.get_guess_count() + 1)
 
     time_left_ms = GAME_DURATION_S * 1000 - (time.time_ns() - game_session.get_start_time()) / 1_000_000;
 
-    response = { 'status': status, 'word_id': game_session.get_word_id(), 'word_length': len(word_obj.word), 'guess': request.form['guess'], 'result': result, 'time_left_ms': time_left_ms }
+    response = { 
+        'status': status, 
+        'word_id': game_session.get_word_id(), 
+        'word_length': len(word_obj.word), 
+        'guess': request.form['guess'], 
+        'result': result, 
+        'time_left_ms': time_left_ms,
+        'got_points': got_points,
+        'correct_points': points_for_guess(game_session.get_guess_count()),
+        'points': game_session.get_points()
+    }
     return jsonify( response )
+
+def points_for_guess(guess_num : int):
+    point_table = [10, 10, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+    return point_table[min(guess_num, len(point_table) - 1)]
 
 def is_correct(result):
     return all( r == "CORRECT" for r in result )
