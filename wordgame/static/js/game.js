@@ -86,6 +86,12 @@ class LetterInputs
         return id;
     }
 
+    sendGuess()
+    {
+        this.lockGuess();
+        this.funcOnGuess( this.getGuess() );
+    }
+
     _funcLetterInput(next_id, is_last_letter)
     {
         let inputs = this;
@@ -101,8 +107,7 @@ class LetterInputs
                 }
                 else
                 {
-                    inputs.lockGuess();
-                    inputs.funcOnGuess( inputs.getGuess() );
+                    inputs.sendGuess();
                 }
             }
         };
@@ -160,6 +165,7 @@ class Game
         this.time_left_ms = -1;
         this.timer_interval_id = -1;
         this.points = -1;
+        this.timer = -1;
     }
 
     startNewWord(word_length, correct_points)
@@ -168,11 +174,15 @@ class Game
         this.startNewGuess(correct_points)
     }
 
+    startTimer()
+    {
+        this.timer = setInterval( function() { game.timePassed(100) }, 100 );        
+    }
+
     updateTimeLeft(time_left_ms)
     {
         this.time_left_ms = time_left_ms;
-        
-        let time_value = time_left_ms < 0 ? 0 : (time_left_ms + 900);
+        let time_value = time_left_ms - 1001 < 0 ? 0 : (time_left_ms - 1001); // total game duration has 2 second buffer, the timer will spend 1 second on start time and on zero, which feels a bit nicer
         let time_left_s = Math.floor(time_value / 1000) % 60
         let time_left_min = Math.floor(time_value / 1000 / 60);
         let time_left_str = String(time_left_min).padStart(2, "0") + ":" + String(time_left_s).padStart(2, "0");
@@ -184,10 +194,21 @@ class Game
         this.points = points;
         $("#points").text(points);
     }
+    
+    stopGame()
+    {
+        this.letter_inputs.lockGuess();
+        clearInterval(this.timer);
+    }
 
     timePassed(time_passed_ms)
     {
         this.updateTimeLeft(this.time_left_ms - time_passed_ms);
+        if ( this.time_left_ms < 0 )
+        {
+            // it's time to end the game
+            this.letter_inputs.sendGuess();
+        }
     }
 
     startNewGuess(correct_points)
@@ -216,7 +237,7 @@ function postStart()
             $( "#text_game_status" ).text( JSON.stringify(data) );
             game.updateTimeLeft(data.time_left_ms)
             game.updatePoints(data.points)
-            setInterval( function() { game.timePassed(100) }, 100 );
+            game.startTimer()
             game.startNewWord(data.word_length, data.correct_points)
         } )
         .fail( onFailure )
@@ -227,15 +248,23 @@ function postGuess( guess )
     $.post( "/game/guess", { 'guess': guess } )
         .done( function( data ) {
             $( "#text_game_status" ).text( JSON.stringify(data) );
-            game.updateTimeLeft(data.time_left_ms)
-            game.updatePoints(data.points)
-            game.colorizeGuessWithResults(data.result)
-            if ( data.status == "try_again" )
-                game.startNewGuess(data.correct_points)
-            else if ( data.status == "new_word" )
-                game.startNewWord( data.word_length, data.correct_points );
+            game.updatePoints(data.points);
+            game.updateTimeLeft(0);
+            if ( data.status == "game_over")
+            {
+                game.stopGame();
+            }
             else
-                onFailure();
+            {
+                game.updateTimeLeft(data.time_left_ms)
+                game.colorizeGuessWithResults(data.result)
+                if ( data.status == "try_again" )
+                    game.startNewGuess(data.correct_points)
+                else if ( data.status == "new_word" )
+                    game.startNewWord( data.word_length, data.correct_points );
+                else
+                    onFailure();
+            }
 
         } )
         .fail( onFailure )

@@ -91,6 +91,11 @@ def game_guess():
     if not game_session.is_active():
         return "Game not active", 400
 
+    if get_time_left() <= 0:
+        final_points = game_session.get_points()
+        game_session.expire()
+        return { 'status': 'game_over', 'points': final_points }
+
     if not 'guess' in request.form:
         return "Guess not supplied", 400
 
@@ -117,7 +122,7 @@ def game_guess():
     else:
         game_session.set_guess_count(game_session.get_guess_count() + 1)
 
-    time_left_ms = GAME_DURATION_S * 1000 - (time.time_ns() - game_session.get_start_time()) / 1_000_000;
+    time_left_ms = get_time_left();
 
     response = { 
         'status': status, 
@@ -131,6 +136,10 @@ def game_guess():
         'points': game_session.get_points()
     }
     return jsonify( response )
+
+def get_time_left():
+    game_session = GameSession()
+    return GAME_DURATION_S * 1000 - (time.time_ns() - game_session.get_start_time()) / 1_000_000;
 
 def points_for_guess(guess_num : int):
     point_table = [10, 10, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
