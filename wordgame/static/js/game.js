@@ -4,6 +4,7 @@ class LetterInputs
     constructor(funcOnGuess)
     {
         this.funcOnGuess = funcOnGuess;
+        this.locked = false;
         this._lines = []
     }
 
@@ -22,28 +23,44 @@ class LetterInputs
         {
             letter.addClass( "letter_correct" )
         }
-    }    
+    }
 
-    createNewLine(length)
+    addStatus(status, separator)
+    {
+        if( separator )
+            $("#game_area").prepend("<hr>");
+
+        $("#game_area").prepend(status);
+    }
+
+    createNewLine(length, separator)
     {
         let first_id = this._getId( this._getCurrLineIndex(), 0 );    
         this._pushNewLine();
-    
-        $("#game_area").prepend( "<div id='line_" + this._getCurrLineIndex() + "'></div>" );
 
+        if( separator )            
+            $("#game_area").prepend("<hr>");
+
+        $("#game_area").prepend( "<div class='d-flex flex-row flex-nowrap p-0 m-0' id='line_" + this._getCurrLineIndex() + "'></div>" );
+        
+        let q = $("#line_" + this._getCurrLineIndex());
+
+        let lc = $("<div class='d-inline-flex p-1 nowrap'></div>").appendTo(q);
         for ( var i = 0; i < length; i++ )
         {
             let is_last_letter = i == length - 1;
-            this._createLetter(is_last_letter);
+            this._createLetter(is_last_letter, lc);
         }
         
-        $("#line_" + this._getCurrLineIndex()).append( "<div id='status_line_"+this._getCurrLineIndex()+"'></div>" );
+        q.append( "<div class='display-4 mx-2' id='status_line_"+this._getCurrLineIndex()+"'></div>" );
     
-        this._getCurrLine()[0].focus();        
+        this._getCurrLine()[0].focus();
+        this.locked = false;
     }
 
     lockGuess()
     {
+        this.locked = true;
         for ( const letter of this._getCurrLine() )
             letter.prop( "disabled", true );
     }
@@ -57,9 +74,18 @@ class LetterInputs
         return guess;
     }    
     
-    setLineStatus(status_str)
+    setLineStatus(status_str, style)
     {
-        $("#status_line_" + this._getCurrLineIndex()).text(status_str);
+        let q = $("#status_line_" + this._getCurrLineIndex());
+        if ( q )
+        {
+            if ( style == 'success' )
+                q.addClass( 'strong text-success' );
+            else if( style == 'fail' )
+                q.addClass( 'text-secondary' )
+        }
+
+        q.text(status_str);
     }
 
 
@@ -88,6 +114,9 @@ class LetterInputs
 
     sendGuess()
     {
+        if ( this.locked )
+            return;
+            
         this.lockGuess();
         this.funcOnGuess( this.getGuess() );
     }
@@ -124,12 +153,12 @@ class LetterInputs
         };        
     }
 
-    _createLetter(is_last_letter)
+    _createLetter(is_last_letter, q)
     {
         let line = this._getCurrLineIndex();
         let char = this._getCurrLine().length;
         let id = this._getId(line, char);
-        $("#line_" + line).append( '<input class="letter" type="text" autocomplete="off" id="' + id + '" maxlength="1">' );
+        q.append( '<input class="letter" type="text" autocomplete="off" id="' + id + '" maxlength="1">' );
         let el = $("#" + id);
 
         let next_id = this._getId(line, char + 1)
@@ -166,12 +195,13 @@ class Game
         this.timer_interval_id = -1;
         this.points = -1;
         this.timer = -1;
+        this.correct_points = -1;
     }
 
     startNewWord(word_length, correct_points)
     {
         this.word_length = word_length
-        this.startNewGuess(correct_points)
+        this.startNewGuess(correct_points, true)
     }
 
     startTimer()
@@ -199,6 +229,9 @@ class Game
     {
         this.letter_inputs.lockGuess();
         clearInterval(this.timer);
+
+        this.letter_inputs.addStatus( "<div class='display-3'>Peli ohi! Sait " + this.points + " pistettä.</div>", true );
+
     }
 
     timePassed(time_passed_ms)
@@ -211,9 +244,15 @@ class Game
         }
     }
 
-    startNewGuess(correct_points)
+    startNewGuess(correct_points, was_success)
     {
-        this.letter_inputs.createNewLine( this.word_length );
+        if ( was_success )
+            this.letter_inputs.setLineStatus( "+" + this.correct_points + " Hienoa!", 'success' );
+        else
+            this.letter_inputs.setLineStatus( "+" + this.correct_points, 'fail' );
+        this.correct_points = correct_points;
+
+        this.letter_inputs.createNewLine( this.word_length, was_success );
         this.letter_inputs.setLineStatus( "+" + correct_points );
     }
 
@@ -259,7 +298,7 @@ function postGuess( guess )
                 game.updateTimeLeft(data.time_left_ms)
                 game.colorizeGuessWithResults(data.result)
                 if ( data.status == "try_again" )
-                    game.startNewGuess(data.correct_points)
+                    game.startNewGuess(data.correct_points, false)
                 else if ( data.status == "new_word" )
                     game.startNewWord( data.word_length, data.correct_points );
                 else
