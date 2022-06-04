@@ -273,7 +273,8 @@ function postStart()
     theme_id = $('#theme_id')[0].value;
     $.post( "/game/start", { "theme_id": theme_id } )
         .done( function( data ) {
-            $( "#text_game_status" ).text( JSON.stringify(data) );
+            //$( "#text_game_status" ).text( JSON.stringify(data) );
+            $( "#text_game_status" ).text( "" );
             game.updateTimeLeft(data.time_left_ms)
             game.updatePoints(data.points)
             game.startTimer()
@@ -286,7 +287,8 @@ function postGuess( guess )
 {
     $.post( "/game/guess", { 'guess': guess } )
         .done( function( data ) {
-            $( "#text_game_status" ).text( JSON.stringify(data) );
+            //$( "#text_game_status" ).text( JSON.stringify(data) );
+            $( "#text_game_status" ).text( "" );
             game.updatePoints(data.points);
             game.updateTimeLeft(0);
             if ( data.status == "game_over")
