@@ -1,34 +1,30 @@
 DO
 $do$
 
-DECLARE schema_version INT := 4; /* INCREMENT THIS VALUE TO RECREATE TABLES */
+DECLARE schema_version INT := 5; /* Current schema version */
 
 BEGIN
 
-IF NOT EXISTS (SELECT version FROM schema WHERE version >= schema_version) THEN
+IF NOT EXISTS (SELECT version FROM schema WHERE version >= 4) THEN
     /* Reset tables */
     DROP SCHEMA public CASCADE;
     CREATE SCHEMA public;
     GRANT ALL ON SCHEMA public TO postgres;
     GRANT ALL ON SCHEMA public TO public;
 
-    /* Record Schema Version */
-    CREATE TABLE IF NOT EXISTS schema ( version INT );
-    INSERT INTO schema(version) VALUES ( schema_version );
-
     /* SCHEMA GOES HERE */
     CREATE TABLE word (
-        id serial PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         word VARCHAR( 128 ) UNIQUE
     );
 
     CREATE TABLE theme (
-        id serial PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         theme_name VARCHAR( 128 )
     );
 
     CREATE TABLE word_theme (
-        id serial PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         word_id INT,
         theme_id INT,
         FOREIGN KEY (word_id) REFERENCES word(id),
@@ -37,6 +33,32 @@ IF NOT EXISTS (SELECT version FROM schema WHERE version >= schema_version) THEN
     );
 
 END IF;
+
+/* Schema version 5 adds two new tables. */
+IF NOT EXISTS (SELECT version FROM schema WHERE version >= 5) THEN
+ 
+    CREATE TABLE account (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(32),
+        pass VARCHAR(128),
+        is_admin BOOLEAN
+    );
+
+    CREATE TABLE game_result (
+        id SERIAL PRIMARY KEY,
+        account_id INT,
+        theme_id INT,
+        score INT,        
+        FOREIGN KEY (account_id) REFERENCES account(id),
+        FOREIGN KEY (theme_id) REFERENCES theme(id)
+    );
+
+END IF;
+
+/* Record Schema Version */
+CREATE TABLE IF NOT EXISTS schema ( version INT );
+DELETE FROM schema;
+INSERT INTO schema(version) VALUES ( schema_version );
 
 END
 $do$
