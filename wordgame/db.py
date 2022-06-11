@@ -176,4 +176,15 @@ class Dao:
 
         db.session.commit()
 
+    def add_result(self, account_id : int, theme_id : int, score : int):
+        query = "INSERT INTO theme VALUES ( DEFAULT, :account_id, :theme_id, :score )"
+        db.session.execute( query, {"account_id": account_id, "theme_id": theme_id, "score": score} )
+        db.session.commit()
+
+    def add_account(self, username : str, password : str, is_admin : bool):
+        query = "INSERT INTO account VALUES ( DEFAULT, :username, :password, :is_admin )"
+        db.session.execute( query, {"username": username, "password": password, "is_admin": is_admin} )
+        db.session.commit()
+
+
 
