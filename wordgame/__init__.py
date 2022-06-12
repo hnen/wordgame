@@ -5,6 +5,7 @@ from os import getenv
 from . import game
 from . import admin
 from . import index
+from . import auth
 
 from . import db
 
@@ -19,6 +20,7 @@ def create_app(test_config=None):
     app.register_blueprint(index.bp)
     app.register_blueprint(game.bp)
     app.register_blueprint(admin.bp)
+    app.register_blueprint(auth.bp)
 
     return app
 

@@ -47,7 +47,27 @@ class Theme:
         self.name = name
         self.word_count = word_count
 
+class Account:
+    id = -1
+    username = ""
+    password = ""
+    is_admin = False
+    def __init__(self, id : int, username : str, password : str, is_admin : bool):
+        self.id = id
+        self.username = username
+        self.password = password
+        self.is_admin = is_admin
+
 class Dao:
+
+    def _unpack_account(self, result) -> Account:
+        row = result.fetchone() 
+        if row:
+            tp = row._mapping
+            return Account( tp["id"], tp["username"], tp["pass"], tp["is_admin"] )
+        else:
+            return None
+
     def _unpack_word(self, result) -> Word:
         tp = result.fetchone()._mapping
         return Word( tp["id"], tp["word"] )
@@ -185,6 +205,11 @@ class Dao:
         query = "INSERT INTO account VALUES ( DEFAULT, :username, :password, :is_admin )"
         db.session.execute( query, {"username": username, "password": password, "is_admin": is_admin} )
         db.session.commit()
+
+    def get_account_by_username(self, username : str):
+        query = "SELECT * FROM account WHERE username=:username"
+        result = db.session.execute( query, {"username": username} )
+        return self._unpack_account(result)
 
 
 

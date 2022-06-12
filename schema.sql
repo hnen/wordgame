@@ -1,7 +1,7 @@
 DO
 $do$
 
-DECLARE schema_version INT := 5; /* Current schema version */
+DECLARE schema_version INT := 6; /* Current schema version */
 
 BEGIN
 
@@ -12,7 +12,6 @@ IF NOT EXISTS (SELECT version FROM schema WHERE version >= 4) THEN
     GRANT ALL ON SCHEMA public TO postgres;
     GRANT ALL ON SCHEMA public TO public;
 
-    /* SCHEMA GOES HERE */
     CREATE TABLE word (
         id SERIAL PRIMARY KEY,
         word VARCHAR( 128 ) UNIQUE
@@ -35,20 +34,22 @@ IF NOT EXISTS (SELECT version FROM schema WHERE version >= 4) THEN
 END IF;
 
 /* Schema version 5 adds two new tables. */
-IF NOT EXISTS (SELECT version FROM schema WHERE version >= 5) THEN
+IF NOT EXISTS (SELECT version FROM schema WHERE version >= 6) THEN
  
+    DROP TABLE IF EXISTS account CASCADE;
     CREATE TABLE account (
         id SERIAL PRIMARY KEY,
-        username VARCHAR(32),
-        pass VARCHAR(128),
+        username VARCHAR(32) UNIQUE,
+        pass VARCHAR(64),
         is_admin BOOLEAN
     );
 
+    DROP TABLE IF EXISTS game_result;
     CREATE TABLE game_result (
         id SERIAL PRIMARY KEY,
         account_id INT,
         theme_id INT,
-        score INT,        
+        score INT,
         FOREIGN KEY (account_id) REFERENCES account(id),
         FOREIGN KEY (theme_id) REFERENCES theme(id)
     );

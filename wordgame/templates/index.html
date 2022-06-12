@@ -3,15 +3,32 @@
 {% block content %}
   <p> 
 
-    <div class="container border mb-4 pt-3 px-4">
-      <h3 class="mb-3">Aloita Peli</h3>
-      {% for theme in themes: %}
-      <form action="/game/{{ theme.id }}" method="POST"><input class="btn btn-primary mb-2" type="submit" value="{{ theme.name }}"></form>
-      {% endfor %}
-      <div class="py-2"></div>
-    </div>
+    {% if account %}
+      <div class="container border mb-4 pt-3 px-4">
+        <h3 class="mb-3">Aloita Peli</h3>
+        {% for theme in themes: %}
+        <form action="/game/{{ theme.id }}" method="POST"><input class="btn btn-primary mb-2" type="submit" value="{{ theme.name }}"></form>
+        {% endfor %}
+        <div class="py-2"></div>
+      </div>
 
-    <form action="/admin" method="POST"><input class="btn btn-secondary" type="submit" value="Ylläpito"></form>
+      <form action="/admin" method="POST"><input class="btn btn-secondary" type="submit" value="Ylläpito"></form>
+    {% else %}
+      <form class="mb-3 container border mb-4 pt-3 px-4 pb-4" action="auth/login" method="post">
+        <div>
+          <label for="account_name" class="form-label">Käyttäjänimi</label>
+          <input type="text" class="form-control" id="account_name" name="account_name">
+        </div>
+        <div class="mb-3">
+          <label for="account_pass" class="form-label">Salasana</label>
+          <input type="password" class="form-control" id="account_pass" name="account_pass">
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-3">Kirjaudu</button> <br>
+
+        <a href="/auth/register">Luo tunnus</a>
+      </form>
+    {% endif %}
    </p>
 {% endblock %}
 

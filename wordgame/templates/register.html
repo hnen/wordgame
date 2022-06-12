@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <p> 
+    <form action="register" method="post" class="mb-3 container border mb-4 pt-3 px-4 pb-4">
+      <div>
+        <label for="account_name" class="form-label">Käyttäjänimi</label>
+        <input type="text" class="form-control" id="account_name" name="account_name">
+      </div>
+      <div class="mb-3">
+        <label for="account_pass0" class="form-label">
+            Salasana
+            <a href="#" class="d-inline-block pt-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" id="tooltip" title="Salasanan tulee olla yli 8 merkkiä pitkä, ja sisältää ainakin kolmea seuraavasta: Pieniä kirjaimia, Isoja kirjaimia, Numeroita tai Erikoismerkkejä tai välilyöntejä.">
+                <object data="static/svg/info-svgrepo-com.svg" width="16px" height="16px"></object>
+            </a>
+        </label>
+        <input type="password" class="form-control" id="account_pass0" name="account_pass0">
+      </div>      
+      <div class="mb-3">
+        <label for="account_pass1" class="form-label">Salasana uudestaan</label>
+        <input type="password" class="form-control" id="account_pass1" name="account_pass1">
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="account_admin" name="account_admin">
+        <label class="form-check-label" for="exampleCheck1">Ylläpitäjän oikeudet</label>
+      </div>
+      <button type="submit" class="btn btn-primary mb-3">Luo tunnus</button> <br>
+    </form>
+   </p>
+
+
+{% endblock %}
+

@@ -24,6 +24,19 @@
 
         <div class="container">
             <section class="content">    
+
+                {% if error %}
+                <div class="mb-3 container border mb-4 pt-3 px-4 pb-4">
+                    {{error|safe}}
+                </div>
+                {%endif%}
+                
+                {% if message %}
+                <div class="mb-3 container border mb-4 pt-3 px-4 pb-4">
+                    {{message|safe}}
+                </div>
+                {%endif%}
+        
                 {% block content %}{% endblock %}
             </section>
         </div> 
