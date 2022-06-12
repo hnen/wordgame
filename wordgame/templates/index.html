@@ -12,7 +12,10 @@
         <div class="py-2"></div>
       </div>
 
-      <form action="/admin" method="POST"><input class="btn btn-secondary" type="submit" value="Ylläpito"></form>
+      {% if account.is_admin %}
+        <form action="/admin" method="POST"><input class="btn btn-secondary" type="submit" value="Ylläpito"></form>
+      {% endif %}
+
     {% else %}
       <form class="mb-3 container border mb-4 pt-3 px-4 pb-4" action="auth/login" method="post">
         <div>
