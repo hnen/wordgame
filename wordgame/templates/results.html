@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header_breadcrumb %}
+<li class ="h2 breadcrumb-item">
+    Parhaat Tulokset
+</li>
+<li class ="h2 breadcrumb-item">
+    {{theme.name}}
+</li>
+{% endblock %}
+
+{% block content %}
+
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th class="th-lg">#</th>
+                <th class="th-lg">Nimi</th>
+                <th class="th-lg">Pisteet</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for result in results: %}
+            <tr>
+                <th class="align-middle" scope="row">
+                    {{result.position}}
+                </th>
+                <td>
+                    {{result.username}}
+                </td>
+                <td>
+                    {{result.score}}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+

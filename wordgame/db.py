@@ -58,6 +58,16 @@ class Account:
         self.password = password
         self.is_admin = is_admin
 
+class Result:
+    position = -1
+    username = ""
+    score = -1
+
+    def __init__(self, position : int, username : str, score : int):
+        self.position = position
+        self.username = username
+        self.score = score
+
 class Dao:
 
     def _unpack_account(self, result) -> Account:
@@ -88,6 +98,13 @@ class Dao:
         for tp in result.fetchall():            
             mapping = tp._mapping
             ret.append(Theme(mapping["id"], mapping["theme_name"], mapping["word_count"]))
+        return ret
+
+    def _unpack_results(self, result) -> []:
+        ret = []
+        for tp in result.fetchall():            
+            mapping = tp._mapping
+            ret.append(Result( mapping["position"], mapping["username"], mapping["score"] ))
         return ret
 
     def _unpack_word_themes_dict(self, result) -> []:
@@ -197,7 +214,7 @@ class Dao:
         db.session.commit()
 
     def add_result(self, account_id : int, theme_id : int, score : int):
-        query = "INSERT INTO theme VALUES ( DEFAULT, :account_id, :theme_id, :score )"
+        query = "INSERT INTO game_result VALUES ( DEFAULT, :account_id, :theme_id, :score )"
         db.session.execute( query, {"account_id": account_id, "theme_id": theme_id, "score": score} )
         db.session.commit()
 
@@ -210,6 +227,15 @@ class Dao:
         query = "SELECT * FROM account WHERE username=:username"
         result = db.session.execute( query, {"username": username} )
         return self._unpack_account(result)
+
+    def get_top_results(self, theme_id : int, result_count : int):
+        query = """SELECT ROW_NUMBER() OVER (ORDER BY r.score DESC) position, r.*, a.username FROM game_result r 
+                    LEFT JOIN account a ON r.account_id = a.id 
+                    WHERE r.theme_id = :theme_id
+                    ORDER BY r.score DESC
+                    LIMIT :result_count"""
+        result = db.session.execute( query, {"theme_id": theme_id, "result_count": result_count} )
+        return self._unpack_results(result)
 
 
 

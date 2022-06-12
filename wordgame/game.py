@@ -1,6 +1,7 @@
 from flask import Blueprint, session, request
 from flask import render_template, jsonify
 from .db import Dao, Word
+from .auth import AuthSession
 import time
 
 bp = Blueprint('game', __name__, url_prefix='/game', static_folder='static', static_url_path='/static')
@@ -86,6 +87,7 @@ def game_start():
 @bp.route('/guess', methods=['POST'])
 def game_guess():
     game_session = GameSession()
+    auth_session = AuthSession()
     dao = Dao()
 
     if not game_session.is_active():
@@ -93,6 +95,7 @@ def game_guess():
 
     if get_time_left() <= 0:
         final_points = game_session.get_points()
+        dao.add_result(auth_session.get_account(), game_session.get_theme_id(), final_points)
         game_session.expire()
         return { 'status': 'game_over', 'points': final_points }
 

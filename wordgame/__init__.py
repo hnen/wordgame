@@ -6,6 +6,7 @@ from . import game
 from . import admin
 from . import index
 from . import auth
+from . import results
 
 from . import db
 
@@ -21,6 +22,7 @@ def create_app(test_config=None):
     app.register_blueprint(game.bp)
     app.register_blueprint(admin.bp)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(results.bp)
 
     return app
 
