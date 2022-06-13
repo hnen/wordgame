@@ -1,9 +1,23 @@
-from flask import Blueprint, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for, abort
 from flask import render_template, jsonify
+from .auth import AuthSession
 from .db import Dao, Theme
 import re
 
 bp = Blueprint('admin', __name__, url_prefix='/admin', static_folder='static', static_url_path='/static')
+
+@bp.before_request
+def before_request():
+    auth = AuthSession()
+
+    if not auth.is_logged_in():
+        abort(403)
+
+    acc_id = auth.get_account()
+    acc = dao.get_account()
+
+    if not acc or not acc.is_admin:
+        abort(403)
 
 @bp.route('/', methods=['GET', 'POST'])
 def admin():

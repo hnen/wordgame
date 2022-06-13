@@ -1,4 +1,4 @@
-from flask import Blueprint, session, request
+from flask import Blueprint, session, request, redirect, url_for
 from flask import render_template, jsonify
 from .db import Dao, Word
 from .auth import AuthSession
@@ -61,6 +61,13 @@ class GameSession:
         session.pop(self.KEY_WORD_ID, None)
         session.pop(self.KEY_THEME_ID, None)
         session.pop(self.KEY_START_TIME, None)
+
+@bp.before_request
+def before_request():
+    auth = AuthSession()
+
+    if not auth.is_logged_in():
+        return redirect(url_for('index.index'))
 
 @bp.route('/<theme_id>', methods=['GET', 'POST'])
 def game(theme_id):

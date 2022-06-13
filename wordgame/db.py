@@ -228,6 +228,11 @@ class Dao:
         result = db.session.execute( query, {"username": username} )
         return self._unpack_account(result)
 
+    def get_account(self, id : int):
+        query = "SELECT * FROM account WHERE id=:id"
+        result = db.session.execute( query, {"id": id} )
+        return self._unpack_account(result)
+
     def get_top_results(self, theme_id : int, result_count : int):
         query = """SELECT ROW_NUMBER() OVER (ORDER BY r.score DESC) position, r.*, a.username FROM game_result r 
                     LEFT JOIN account a ON r.account_id = a.id 
