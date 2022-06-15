@@ -1,6 +1,7 @@
 from flask import Blueprint, session, request
 from flask import render_template, redirect, url_for
 from .db import Dao
+from .app import app
 import re
 import hashlib
 
@@ -134,4 +135,11 @@ def validate_password(password_text):
     
 def password_hash(password_text):
     return hashlib.sha256(password_text.encode('utf-8')).hexdigest()
+
+@app.context_processor
+def inject_auth():
+    dao = Dao()
+    session = AuthSession()
+    account = dao.get_account( session.get_account() ) if session.is_logged_in() else None
+    return dict(account=account)
 

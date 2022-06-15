@@ -1,3 +1,3 @@
-from wordgame import create_app
+import wordgame
 
-app = create_app()
+
