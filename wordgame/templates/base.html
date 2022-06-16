@@ -36,10 +36,9 @@
                         Pelaa
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarPlay">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        {% for theme in themes %}
+                        <li><a class="dropdown-item" href="/game/{{theme.id}}">{{theme.name}}</a></li>
+                        {% endfor %}
                     </ul>                    
                   </li>
                   <li class="nav-item dropdown">
@@ -47,10 +46,9 @@
                       Parhaat tulokset
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        {% for theme in themes %}
+                        <li><a class="dropdown-item" href="/results/{{theme.id}}">{{theme.name}}</a></li>
+                        {% endfor %}
                     </ul>
                   </li>
                   {% if account and account.is_admin %}
@@ -59,10 +57,9 @@
                         Ylläpito
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="/admin/add">Lisää sanoja</a></li>
+                        <li><a class="dropdown-item" href="/admin/themes">Hallitse teemoja</a></li>
+                        <li><a class="dropdown-item" href="/admin/words">Hallitse sanoja</a></li>
                         </ul>
                     </li>
                   {% endif %}

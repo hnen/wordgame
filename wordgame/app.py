@@ -3,6 +3,7 @@ from flask import render_template
 from os import getenv
 import html
 from . import db
+from .db import Dao
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -28,3 +29,8 @@ def inject_messages():
     message = html.escape(request.args["message"]) if request and "message" in request.args else None
     error = html.escape(request.args["error"]) if request and "error" in request.args else None
     return dict(message=message, error=error)
+
+@app.context_processor
+def inject_themes():
+    dao = Dao()
+    return dict(themes=dao.get_themes())
