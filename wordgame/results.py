@@ -4,7 +4,11 @@ import html
 
 bp = Blueprint('results', __name__, url_prefix='/results', static_folder='static', static_url_path='/static')
 
-@bp.route('/<theme_id>')
+@bp.route('/')
+def results_index():
+    return render_template( "results_index.html" )
+
+@bp.route('/<theme_id>', methods=['GET', 'POST'])
 def results(theme_id : int):
     dao = Dao()
     theme = dao.get_theme( theme_id )
