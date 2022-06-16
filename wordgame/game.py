@@ -6,7 +6,7 @@ import time
 
 bp = Blueprint('game', __name__, url_prefix='/game', static_folder='static', static_url_path='/static')
 
-GAME_DURATION_S = 302
+GAME_DURATION_S = 302 # 2 seconds added as a 'buffer', it feels a bit nicer when timer stays one second at start time and one second at 00:00
 
 class GameSession:
     KEY_WORD_ID = "game_word_id"
