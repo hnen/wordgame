@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header_breadcrumb %}
+<li class ="h2 breadcrumb-item">
+    Pelaa
+</li>
+{% endblock %}
+
+{% block content %}
+  <p> 
+      <div class="container border mb-4 pt-3 px-4">
+        <h4 class="mb-3">Valitse teema</h3>
+        <div class="container">
+        {% for theme in themes: %}
+          <div class="row">
+            <div class="col-2">
+              <form action="/game/{{ theme.id }}" method="POST"><input class="btn btn-primary mb-2" type="submit" value="{{ theme.name }}"></form>
+            </div>
+            <div class="col">
+              <a href="/results/{{theme.id}}">Parhaat tulokset</a>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+        <div class="py-2"></div>
+      </div>
+   </p>
+{% endblock %}
+

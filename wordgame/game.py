@@ -91,6 +91,12 @@ def game_start():
     }
     return jsonify( response )
 
+@bp.route('/', methods=['GET', 'POST'])
+def game_index():
+    dao = Dao()
+    return render_template( "game_index.html" )
+
+
 @bp.route('/guess', methods=['POST'])
 def game_guess():
     game_session = GameSession()
