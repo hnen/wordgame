@@ -60,7 +60,7 @@ def login():
     acc = dao.get_account_by_username(username)
 
     if not acc or password_hash(password) != acc.password:
-        return redirect(url_for('index.index', error="Väärä käyttäjätunnus tai salasana."))
+        return render_template("login.html", error="Väärä käyttäjätunnus tai salasana. Yritä kirjautua uudestaan, tai <a href='register'>luo tunnus</a>.")
 
     session = AuthSession()
     session.set_account(acc.id)
