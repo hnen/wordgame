@@ -67,11 +67,12 @@ def before_request():
     auth = AuthSession()
 
     if not auth.is_logged_in():
-        return redirect(url_for('index.index'))
+        return redirect(url_for('auth.login', message="Sinun tulee olla kirjautunut sisään pelataksesi. Kirjaudu sisään alla tai luo tunnus."))
 
 @bp.route('/<theme_id>', methods=['GET', 'POST'])
 def game(theme_id):
-    return render_template( "game.html", theme_id=theme_id )
+    dao = Dao()
+    return render_template( "game.html", theme=dao.get_theme(theme_id) )
 
 @bp.route('/start', methods=['POST'])
 def game_start():

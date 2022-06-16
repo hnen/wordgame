@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
 
+{% block header_breadcrumb %}
+<li class ="h2 breadcrumb-item">
+    <a href='/game'>Pelaa</a>
+</li>
+<li class ="h2 breadcrumb-item">
+    {{theme.name}}
+</li>
+{% endblock %}
+
 {% block content %}
 
-  <input type="hidden" id="theme_id" value="{{theme_id}}">
+  <input type="hidden" id="theme_id" value="{{theme.id}}">
 
   <script src="static/js/game.js"></script>
 
