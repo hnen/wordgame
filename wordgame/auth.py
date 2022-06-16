@@ -52,6 +52,8 @@ def register():
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if not ("account_name" in request.form and "account_pass" in request.form):
+        return render_template("login.html")
 
     username = request.form["account_name"]
     password = request.form["account_pass"]
