@@ -9,12 +9,13 @@ bp = Blueprint('admin', __name__, url_prefix='/admin', static_folder='static', s
 @bp.before_request
 def before_request():
     auth = AuthSession()
+    dao = Dao()
 
     if not auth.is_logged_in():
         abort(403)
 
     acc_id = auth.get_account()
-    acc = dao.get_account()
+    acc = dao.get_account(acc_id)
 
     if not acc or not acc.is_admin:
         abort(403)
