@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <p>HELLOZ</p>
+  <h2>Sanapeli</h2>
+
+  <p>
+    Sanapelissä sinun tulee kerätä pisteitä arvaamalla mahdollisimman monta sanaa vihjeiden avulla viidessä minuutissa.
+    Aluksi tiedät vain sanan pituuden. Arvauksen jälkeen peli antaa vihjeen jokaisesta arvauksen kirjaimesta. Punaiseksi värjäytynyt
+    kirjain tarkoittaa, että sanassa ei ole kyseistä kirjainta. Keltainen väri tarkoittaa, että sanassa on kirjain, mutta se on eri kohdassa sanaa.
+    Vihreäksi värjäytynyt kirjain tarkoittaa että kirjain on oikealla paikalla. Niin kauan kuin pelissä on aikaa jäljellä, saat uuden sanan arvattavaksi
+    jolla voit kerätä lisää pisteitä. 
+    Parhaat pisteet näkyy parhaat tulokset -listoilla, joita voit yrittää peitota.
+  </p>
+
+  {% if account %}
+  <p>
+    Valitse teema yläpalkista aloittaaksesi pelin!
+  </p>
+  {% else %}
+  <p>
+    <a href='/auth/login'>Kirjaudu sisään</a> pelataksesi!</a>
+  </p>
+  {% endif %}
+
+
 {% endblock %}
 

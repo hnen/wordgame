@@ -11,6 +11,7 @@
 
 
 {% block content %}
+<p>Lisää sanoja -työkalu on hyödyllinen kun haluat lisätä kerralla useita sanoja. Sanat voi lisätä suoraan tiettyihin teemoihin, tai ne voi lisätä ilman teemaa ja lajitella teemoihin toisella työkalulla.</p>
 
 <ul class="add_word_status">
     {% if accepted_words|length > 0 %}
@@ -26,7 +27,7 @@
     <div class="dropdown mb-3 mt-3">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
             Valitse teemoja
-        </button>
+        </button> {{ info_tooltip("theme_tooltip", "Valitse teemat johon sanat lisätään. Yhtään teemaa ei tarvitse välttämättä valita." ) }}
 
         <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton1">    
                 {% for theme in themes: %}
@@ -45,7 +46,7 @@
         {% if rejected_words|length > 0 %}
         (sisältää hylätyt sanat)
         {% endif %}
-        </label>
+        </label>{{ info_tooltip("list_tooltip", "Laita jokainen sana omalle rivilleen." ) }}
         <textarea class="form-control" id="word_list" name="word_list" rows="10">
             {%- for word in rejected_words: -%}
                 {{word ~ '\n'}}
