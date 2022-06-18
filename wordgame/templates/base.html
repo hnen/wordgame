@@ -66,7 +66,7 @@
                 {% if account %}
                     <span class="navbar-text">Kirjautunut: {{account.username}}</span>
                     <div class="d-flex">
-                        <form action="auth/logout" method="POST" class="d-flex login-container input-group mx-2">
+                        <form action="/auth/logout" method="POST" class="d-flex login-container input-group mx-2">
                             <button type="submit" class="btn btn-danger">Kirjaudu ulos</button>
                         </form>
                     </div>
