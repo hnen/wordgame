@@ -1,40 +1,39 @@
-from flask import request
+from ..db import Dao
+from .session import Session
 import re
 import hashlib
 
-class RegisterInfo:
-    username = ""
-    password_hash = ""
-    is_admin = False
+def try_login(username, password):    
+    dao = Dao()
+    acc = dao.get_account_by_username(username)
 
-    def __init__(self, username, password_hash, is_admin):
-        self.username = username
-        self.password_hash = password_hash
-        self.is_admin = is_admin
+    if not acc or password_hash(password) != acc.password:
+        #return render_template("login.html", error="Väärä käyttäjätunnus tai salasana. Yritä kirjautua uudestaan, tai <a href='register'>luo tunnus</a>.")
+        return False
 
-def validate_register_input():
-    if not request.form:
-        return None, None
+    session = Session()
+    session.set_account(acc.id)
 
-    print(str(request.form))
+    return True
 
-    username = request.form["account_name"]
-    password_text0 = request.form["account_pass0"]
-    password_text1 = request.form["account_pass1"]
-    is_admin = request.form["account_admin"] == "on" if "account_admin" in request.form else False
-
+def try_register(username, password_text0, password_text1, is_admin):
     if not (username and password_text0 and password_text1):
-        return None, None
+        return "Virheellinen syöte"
 
     if password_text0 != password_text1:
-        return None, "Salasanat eivät täsmää."
+        return "Salasanat eivät täsmää."
 
     password_error = validate_password(password_text0)
     if password_error:
-        return None, password_error
+        return password_error
 
-    return RegisterInfo( username, password_hash(password_text0), is_admin ), None
+    dao = Dao()
+    if dao.get_account_by_username(username):
+        return "Käyttäjätunnus on jo varattu. Kokeile rekisteröityä toisella käyttäjänimellä."
 
+    dao.add_account( username, password_hash(password_text0), is_admin )
+
+    return None
 
 def validate_password(password_text):
     if len(password_text) < 8:

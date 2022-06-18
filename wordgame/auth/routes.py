@@ -15,17 +15,19 @@ def inject_auth():
     return dict(account=account)
 
 @bp.route('/register', methods=['GET', 'POST'])
-def register():    
-    register_info, error = validate_register_input()
+def register(): 
+    username = request.form.get("account_name")
+    password_text0 = request.form.get("account_pass0")
+    password_text1 = request.form.get("account_pass1")
+    is_admin = request.form.get("account_admin") == "on" if "account_admin" in request.form else False
 
-    if not register_info or error:
+    if not(username and password_text0 and password_text1):
+        return render_template( "register.html" )
+        
+    error = try_register(username, password_text0, password_text1, is_admin)
+
+    if error:
         return render_template( "register.html", error=error )
-
-    dao = Dao()
-    if dao.get_account_by_username(register_info.username):
-        return render_template( "register.html", error="Käyttäjätunnus on jo varattu. Kokeile rekisteröityä toisella käyttäjänimellä." )
-
-    dao.add_account( register_info.username, register_info.password_hash, register_info.is_admin )
 
     return redirect(url_for('index.index', message="Tili luotu onnistuneesti. Voit kirjautua nyt sisään."))
 
@@ -38,14 +40,8 @@ def login():
     username = request.form["account_name"]
     password = request.form["account_pass"]
 
-    dao = Dao()
-    acc = dao.get_account_by_username(username)
-
-    if not acc or password_hash(password) != acc.password:
+    if not try_login( username, password ):
         return render_template("login.html", error="Väärä käyttäjätunnus tai salasana. Yritä kirjautua uudestaan, tai <a href='register'>luo tunnus</a>.")
-
-    session = Session()
-    session.set_account(acc.id)
 
     return redirect(url_for('index.index'))
 
