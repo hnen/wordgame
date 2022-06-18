@@ -1,18 +1,30 @@
 # Sanapeli
 
+Sanapelissä pelaajan on tarkoitus arvata mahdollisimman monta sanaa kolmen minuutin sisällä. Aluksi peli paljastaa vain sanan pituuden, ja jokaisen arvauksen jälkeen peli näyttää mitkä kirjaimet osuivat sanassa oikeaan, mitkä olivat oikeita kirjaimia mutta väärällä paikalla, ja mitkä kirjaimet eivät kuulu ollenkaan sanaan. Pelissä on useita teemoja joilla peliä voi pelata. Ylläpitäjä voi hallita sovelluksessa olevia teemoja ja niihin liittyviä sanoja. Sovellusta voi kokeilla osoitteessa https://wordgame-tsoha.herokuapp.com/ .
+
+## Välipalautus 3 19.6.2022
+
+### Sovelluksen tilanne
+
+Sovellukseen on toteutettu kaikki toiminnot, ja sitä on parannettu viime välipalautuksen palautteen perusteella. Käyttäjäkokemusta on parennettu niin, että sovellusta pitäisi pystyä käyttämään selkeästi ilman erillistä dokumentaatiota. Sovelluksesta pitäisi pääosin puuttua enää yksityiskohtia ja hienosäätöä. Keskeiset muutokset ovat:
+ - Parhaat tulokset ja kirjautuminen toteutettu.
+ - Navigointia selkeytetty: lisätty navigointipalkki ja 'breadcrumbs'.
+ - Sivuille lisätty opastavia tekstejä.
+ - Ulkoasua selkeytetty hieman.
+ - Koodin rakennetta selkeytetty. Pitkät tiedostot on hajautettu useaan tiedostoihin omiin moduuleihinsa. Moduulit paljastavat vain tarpeelliset symbolit ulos päin ja sisäinen toteutus on kapsuloitu. Jokaisella tiedostolla on selkeämmin oma yksittäinen vastuunsa, esim. routes -tiedostot eivät sisällä sovelluslogiikkaa, vaan ovat vastuussa pyyntöjen parsimisista ja vastausten luonnista.
+
+### Sovelluksen rakenteesta
+
+ - Python-koodi on hakemistoissa `wordgame`, `wordgame/admin`, `wordgame/auth`, `wordgame/db` ja `wordgame/game`.
+ - Peli sisältää jonkin verran javascript-koodia, ja se on tiedostossa `static/js/game.js`. Muut js-tiedostot ovat käytettyjä kirjastoja.
+
 ## Välipalautus 2 5.6.2022
-
-### Kuvaus
-
-Sanapelissä pelaajan on tarkoitus arvata mahdollisimman monta sanaa viiden minuutin sisällä. Aluksi peli paljastaa vain sanan pituuden, ja jokaisen arvauksen jälkeen peli näyttää mitkä kirjaimet osuivat sanassa oikeaan, mitkä olivat oikeita kirjaimia mutta väärällä paikalla, ja mitkä kirjaimet eivät kuulu ollenkaan sanaan. Pelissä on useita teemoja joilla peliä voi pelata. Ylläpitäjä voi hallita sovelluksessa olevia teemoja ja niihin liittyviä sanoja.
 
 ### Sovelluksen tilanne
 
 Sovellukseen on toteutettu keskeiset toiminnot, eli peliä voi pelata haluamallaan teemalla ja peliin liittyviä sanoja ja teemoja voi hallita. Sovelluksesta puuttuu kokonaan tunnuksen luominen ja kirjautuminen, ja parhaiden tulosten lista. Myös ulkoasu ja käytettävyys on keskeneräinen.
 
 ### Miten testata?
-
-Sovellusta voi kokeilla osoitteessa https://wordgame-tsoha.herokuapp.com/ .
 
 Pääsivulla pelin voi aloittaa suoraan valitsemalla teeman "Aloita peli" laatikosta. Ylläpito-sivulle pääsee ylläpito napista.
 
