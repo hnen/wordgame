@@ -5,12 +5,18 @@ DECLARE schema_version INT := 6; /* Current schema version */
 
 BEGIN
 
+CREATE TABLE IF NOT EXISTS schema ( version INT );
+
 IF NOT EXISTS (SELECT version FROM schema WHERE version >= 4) THEN
     /* Reset tables */
     DROP SCHEMA public CASCADE;
     CREATE SCHEMA public;
     GRANT ALL ON SCHEMA public TO postgres;
     GRANT ALL ON SCHEMA public TO public;
+
+    CREATE TABLE IF NOT EXISTS schema ( version INT );
+    DELETE FROM schema;
+    INSERT INTO schema(version) VALUES ( 4 );
 
     CREATE TABLE word (
         id SERIAL PRIMARY KEY,
