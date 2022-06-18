@@ -1,11 +1,9 @@
-from flask import Blueprint, session, request
+from flask import Blueprint, request
 from flask import render_template, redirect, url_for
 from ..db import Dao
 from ..app import app
 from .auth import *
 from .session import Session
-import re
-import hashlib
 
 bp = Blueprint('auth', __name__, url_prefix='/auth', static_folder='static', static_url_path='/static')
 
