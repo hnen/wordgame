@@ -1,72 +1,5 @@
-from os import getenv
-from flask_sqlalchemy import SQLAlchemy
-
-db = None
-
-def init(app):
-    global db
-
-    uri = getenv("DATABASE_URL")
-
-    # Hack that will fix the deprecated URI Heroku uses
-    if uri and uri.startswith("postgres://"):
-        uri = uri.replace("postgres://", "postgresql://", 1)
-    app.config["SQLALCHEMY_DATABASE_URI"] = uri
-
-    db = SQLAlchemy(app)
-
-class WordTheme:
-    word_id = -1
-    theme_id = -1
-
-    def __init__(self, theme_id : int, word_id : int):
-        self.word_id = word_id
-        self.theme_id = theme_id
-        
-    def toJson(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
-
-class Word:
-    id = -1
-    word = ""
-
-    def __init__(self, word_id : int, word : str):
-        self.id = word_id
-        self.word = word
-
-    def __repr__ (self):
-        return f'Word: {self.id}; {self.word}'
-
-class Theme:
-    id = -1
-    name = ""
-    word_count = 0
-
-    def __init__(self, theme_id : int, name : str, word_count : int):
-        self.id = theme_id
-        self.name = name
-        self.word_count = word_count
-
-class Account:
-    id = -1
-    username = ""
-    password = ""
-    is_admin = False
-    def __init__(self, id : int, username : str, password : str, is_admin : bool):
-        self.id = id
-        self.username = username
-        self.password = password
-        self.is_admin = is_admin
-
-class Result:
-    position = -1
-    username = ""
-    score = -1
-
-    def __init__(self, position : int, username : str, score : int):
-        self.position = position
-        self.username = username
-        self.score = score
+from .structs import *
+from .db import get_session
 
 class Dao:
 
@@ -117,11 +50,11 @@ class Dao:
     def select_random_word(self, theme_id) -> Word:
         # TODO: This method is slow, should come up with something more efficient.
         query = "SELECT w.* FROM word w RIGHT JOIN (SELECT * FROM word_theme WHERE theme_id=:theme_id) AS wt ON wt.word_id = w.id ORDER BY RANDOM() LIMIT 1"
-        result = db.session.execute(query, {"theme_id": theme_id})
+        result = get_session().execute(query, {"theme_id": theme_id})
         return self._unpack_word(result)
 
     def get_word(self, word_id : int) -> Word:
-        result = db.session.execute("SELECT * FROM word WHERE id = :id", {"id": word_id})
+        result = get_session().execute("SELECT * FROM word WHERE id = :id", {"id": word_id})
         return self._unpack_word(result)
 
     def _theme_query(self):
@@ -132,16 +65,16 @@ class Dao:
                     ON t.id = c.theme_id"""
 
     def get_themes(self) -> []:
-        result = db.session.execute(self._theme_query())
+        result = get_session().execute(self._theme_query())
         return self._unpack_themes(result)
 
     def get_word_themes_dict(self) -> []:
-        result = db.session.execute("SELECT * FROM word_theme")
+        result = get_session().execute("SELECT * FROM word_theme")
         return self._unpack_word_themes_dict(result)
 
     def get_theme(self, theme_id) -> []:
         query = f'{self._theme_query()} WHERE id=:id'
-        result = db.session.execute(query, {"id": theme_id})
+        result = get_session().execute(query, {"id": theme_id})
         return self._unpack_theme(result)
 
     def get_words(self, theme_id) -> []:
@@ -150,87 +83,87 @@ class Dao:
                         SELECT * FROM word_theme WHERE theme_id = :theme_id
                     ) as wt
                     ON w.id = wt.word_id"""
-        result = db.session.execute(query, {"theme_id": theme_id} )
+        result = get_session().execute(query, {"theme_id": theme_id} )
         return self._unpack_words(result)
 
     def get_all_words(self) -> []:
         query = """ SELECT id, word FROM word"""
-        result = db.session.execute(query)
+        result = get_session().execute(query)
         return self._unpack_words(result)
 
     def remove_word_from_theme(self, theme_id, word_id):
         query = "DELETE FROM word_theme WHERE theme_id=:theme_id AND word_id=:word_id"
-        db.session.execute( query, {"word_id": word_id, "theme_id": theme_id} )
-        db.session.commit()
+        get_session().execute( query, {"word_id": word_id, "theme_id": theme_id} )
+        get_session().commit()
 
     def add_word_to_theme(self, theme_id, word_id):
         query = "INSERT INTO word_theme VALUES ( DEFAULT, :word_id, :theme_id )"
-        db.session.execute( query, {"word_id": word_id, "theme_id": theme_id} )
-        db.session.commit()
+        get_session().execute( query, {"word_id": word_id, "theme_id": theme_id} )
+        get_session().commit()
 
     def add_words(self, word_list, theme_ids):
         for word in word_list:
             query1 = "INSERT INTO word VALUES ( DEFAULT, :word ) ON CONFLICT DO NOTHING"
-            db.session.execute( query1, {"word": word} )
+            get_session().execute( query1, {"word": word} )
             for theme_id in theme_ids:
                 query2 = """ INSERT INTO word_theme VALUES (
                     DEFAULT,
                     ( SELECT id FROM word WHERE word=:word ),
                     :theme_id
                 )  ON CONFLICT DO NOTHING """
-                db.session.execute( query2, {"word": word, "theme_id": theme_id} )
-        db.session.commit()
+                get_session().execute( query2, {"word": word, "theme_id": theme_id} )
+        get_session().commit()
     
     def add_theme(self, theme_name):
         query = "INSERT INTO theme VALUES ( DEFAULT, :theme_name )"
-        db.session.execute( query, {"theme_name": theme_name} )
-        db.session.commit()
+        get_session().execute( query, {"theme_name": theme_name} )
+        get_session().commit()
         
     def remove_theme(self, theme_id):
         query1 = "DELETE FROM word_theme WHERE theme_id=:theme_id"
         query2 = "DELETE FROM theme WHERE id=:theme_id"
 
-        db.session.execute( query1, {"theme_id": theme_id} )
-        db.session.execute( query2, {"theme_id": theme_id} )
-        db.session.commit()
+        get_session().execute( query1, {"theme_id": theme_id} )
+        get_session().execute( query2, {"theme_id": theme_id} )
+        get_session().commit()
 
         
     def remove_word(self, word_id):
         query1 = "DELETE FROM word_theme WHERE word_id=:word_id"
         query2 = "DELETE FROM word WHERE id=:word_id"
 
-        db.session.execute( query1, {"word_id": word_id} )
-        db.session.execute( query2, {"word_id": word_id} )
-        db.session.commit()
+        get_session().execute( query1, {"word_id": word_id} )
+        get_session().execute( query2, {"word_id": word_id} )
+        get_session().commit()
         
     def remove_words(self, word_ids):
         for word_id in word_ids:
             query1 = "DELETE FROM word_theme WHERE word_id=:word_id"
             query2 = "DELETE FROM word WHERE id=:word_id"
 
-            db.session.execute( query1, {"word_id": word_id} )
-            db.session.execute( query2, {"word_id": word_id} )
+            get_session().execute( query1, {"word_id": word_id} )
+            get_session().execute( query2, {"word_id": word_id} )
 
-        db.session.commit()
+        get_session().commit()
 
     def add_result(self, account_id : int, theme_id : int, score : int):
         query = "INSERT INTO game_result VALUES ( DEFAULT, :account_id, :theme_id, :score )"
-        db.session.execute( query, {"account_id": account_id, "theme_id": theme_id, "score": score} )
-        db.session.commit()
+        get_session().execute( query, {"account_id": account_id, "theme_id": theme_id, "score": score} )
+        get_session().commit()
 
     def add_account(self, username : str, password : str, is_admin : bool):
         query = "INSERT INTO account VALUES ( DEFAULT, :username, :password, :is_admin )"
-        db.session.execute( query, {"username": username, "password": password, "is_admin": is_admin} )
-        db.session.commit()
+        get_session().execute( query, {"username": username, "password": password, "is_admin": is_admin} )
+        get_session().commit()
 
     def get_account_by_username(self, username : str):
         query = "SELECT * FROM account WHERE username=:username"
-        result = db.session.execute( query, {"username": username} )
+        result = get_session().execute( query, {"username": username} )
         return self._unpack_account(result)
 
     def get_account(self, id : int):
         query = "SELECT * FROM account WHERE id=:id"
-        result = db.session.execute( query, {"id": id} )
+        result = get_session().execute( query, {"id": id} )
         return self._unpack_account(result)
 
     def get_top_results(self, theme_id : int, result_count : int):
@@ -239,7 +172,7 @@ class Dao:
                     WHERE r.theme_id = :theme_id
                     ORDER BY r.score DESC
                     LIMIT :result_count"""
-        result = db.session.execute( query, {"theme_id": theme_id, "result_count": result_count} )
+        result = get_session().execute( query, {"theme_id": theme_id, "result_count": result_count} )
         return self._unpack_results(result)
 
 
