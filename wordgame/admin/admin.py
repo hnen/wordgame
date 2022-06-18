@@ -1,14 +1,25 @@
-from flask import Blueprint, request, redirect, url_for, abort
-from flask import render_template, jsonify
 from ..auth import AuthSession
 from ..db import Dao, Theme
 import re
 
-def do_add(dao, form):
-    print("Adding:", form)
+def is_user_admin():
+    auth = AuthSession()
+    dao = Dao()
 
-    word_list = parse_words(form["word_list"])
-    theme_ids = parse_theme_ids(form)
+    if not auth.is_logged_in():
+        return False
+
+    acc_id = auth.get_account()
+    acc = dao.get_account(acc_id)
+
+    if not acc or not acc.is_admin:
+        return False
+
+    return True
+
+def add_words(word_list, theme_ids):
+    dao = Dao()
+
     accepted, rejected = validate_words(word_list)
 
     print("ACCEPTED: ", str(accepted))
@@ -49,27 +60,4 @@ def validate_words(word_list):
         else:
             rejected.append(word)
     return (accepted, rejected)
-
-def parse_words(words_raw):
-    w = words_raw.split("\n")
-    w = map( str.strip, w )
-    w = map( str.lower, w )
-    return list( w )
-
-def parse_theme_ids(form):
-    ret = []
-    for (key, value) in form.items():
-        if value == "on":
-            match = re.search( "theme_\d+", key )
-            if match:
-                ret.append(int(match.group()[6:]))
-    return ret
-
-def parse_selected_words(form):
-    ret = []
-    for (key, value) in form.items():
-        match = re.search( "select_\d+", key )
-        if match:
-            ret.append(int(match.group()[7:]))
-    return ret
 

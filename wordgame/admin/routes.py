@@ -8,16 +8,7 @@ bp = Blueprint('admin', __name__, url_prefix='/admin', static_folder='../static'
 
 @bp.before_request
 def before_request():
-    auth = AuthSession()
-    dao = Dao()
-
-    if not auth.is_logged_in():
-        abort(403)
-
-    acc_id = auth.get_account()
-    acc = dao.get_account(acc_id)
-
-    if not acc or not acc.is_admin:
+    if not is_user_admin():
         abort(403)
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -27,23 +18,13 @@ def admin():
 @bp.route('/themes', methods=['GET', 'POST'])
 def themes():
     dao = Dao()
-
-    error = None
-    if "error" in request.args:
-        error = request.args["error"]
-
-    return render_template( "admin_themes.html", themes=dao.get_themes(), error=error )
+    return render_template( "admin_themes.html", themes=dao.get_themes() )
 
 
 @bp.route('/words', methods=['GET', 'POST'])
 def words():
     dao = Dao()
-
-    error = None
-    if "error" in request.args:
-        error = request.args["error"]
-
-    return render_template( "admin_words.html", themes=dao.get_themes(), words=dao.get_all_words(), error=error )
+    return render_template( "admin_words.html", words=dao.get_all_words() )
 
 
 @bp.route('/words/remove/<word_id>', methods=['GET', 'POST'])
@@ -54,12 +35,19 @@ def word_remove(word_id):
 
 @bp.route('/words/remove', methods=['GET', 'POST'])
 def word_remove_multiple():
+
+    def parse_selected_words(form):
+        ret = []
+        for (key, value) in form.items():
+            match = re.search( "select_\d+", key )
+            if match:
+                ret.append(int(match.group()[7:]))
+        return ret
+
     dao = Dao()
     word_ids = parse_selected_words(request.form)
-    print(str(word_ids))
     dao.remove_words(word_ids)
     return redirect(url_for('admin.words'))
-
 
 @bp.route('/words/add_theme', methods=['POST'])
 def word_add_theme():
@@ -115,10 +103,24 @@ def theme_remove_word(theme_id, word_id):
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
     dao = Dao()
-
     accepted, rejected = [], []
 
-    if "do_add" in request.form and request.form["do_add"] == "on":
-        accepted, rejected = do_add(dao, request.form)
+    def parse_words(words_raw):
+        w = words_raw.split("\n")
+        w = map( str.strip, w )
+        w = map( str.lower, w )
+        return list( w )
 
-    return render_template( "admin_add.html", themes=dao.get_themes(), rejected_words = rejected, accepted_words = accepted )
+    def parse_theme_ids(form):
+        ret = []
+        for (key, value) in form.items():
+            if value == "on":
+                match = re.search( "theme_\d+", key )
+                if match:
+                    ret.append(int(match.group()[6:]))
+        return ret
+
+    if "do_add" in request.form and request.form["do_add"] == "on":
+        accepted, rejected = add_words(parse_words(request.form["word_list"]), parse_theme_ids(request.form))
+
+    return render_template( "admin_add.html", rejected_words = rejected, accepted_words = accepted )
