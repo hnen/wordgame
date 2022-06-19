@@ -6,7 +6,7 @@ Sanapelissä pelaajan on tarkoitus arvata mahdollisimman monta sanaa kolmen minu
 
 ### Sovelluksen tilanne
 
-Sovellukseen on toteutettu kaikki toiminnot, ja sitä on parannettu viime välipalautuksen palautteen perusteella. Käyttäjäkokemusta on parennettu niin, että sovellusta pitäisi pystyä käyttämään selkeästi ilman erillistä dokumentaatiota. Sovelluksesta pitäisi pääosin puuttua enää yksityiskohtia ja hienosäätöä. Keskeiset muutokset ovat:
+Sovellukseen on toteutettu kaikki toiminnot, ja sitä on parannettu viime välipalautuksen palautteen perusteella. Käyttäjäkokemusta on parennettu niin, että sovellusta pitäisi pystyä käyttämään selkeästi ilman erillistä dokumentaatiota. Sen verran voisi tosin tarkentaa, että ylläpito-ominaisuuksia testatakseen, tulee rekisteröityä tunnus, jolla on valittu "Ylläpitäjän oikeudet." Muuten sovelluksesta pitäisi pääosin puuttua enää yksityiskohtia ja hienosäätöä. Keskeiset muutokset ovat:
  - Parhaat tulokset ja kirjautuminen toteutettu.
  - Navigointia selkeytetty: lisätty navigointipalkki ja 'breadcrumbs'.
  - Sivuille lisätty opastavia tekstejä.
