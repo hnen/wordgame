@@ -202,6 +202,7 @@ class Game
         this.points = -1;
         this.timer = -1;
         this.correct_points = -1;
+        this.time_on_last_refresh = 0;
     }
 
     startNewWord(word_length, correct_points)
@@ -212,7 +213,14 @@ class Game
 
     startTimer()
     {
-        this.timer = setInterval( function() { game.timePassed(100) }, 100 );        
+        this.time_on_last_refresh = Date.now();
+        this.timer = setInterval( function(game) { 
+            return function() { 
+                let now = Date.now();
+                game.timePassed(now - game.time_on_last_refresh)
+                game.time_on_last_refresh = now;
+            };
+            }(this), 100 );        
     }
 
     updateTimeLeft(time_left_ms)
