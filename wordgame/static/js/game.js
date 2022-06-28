@@ -129,6 +129,12 @@ class LetterInputs
             let letter_is_empty = $(this).val() === "";
             if ( !letter_is_empty )
             {
+                let is_valid_letter = $(this).val().length == 1 && $(this).val().match("[a-zA-ZåäöÅÄÖ]");
+                if ( !is_valid_letter )
+                {
+                    $(this).val('');
+                    return;
+                }                
                 if ( !is_last_letter )
                 {
                     let next = $("#" + next_id);
@@ -318,7 +324,7 @@ function postGuess( guess )
 
 function onFailure()
 {
-    $( "#text_game_status" ).text( "Jotain meni vikaan." );
+    $( "#text_game_status" ).text( "Jotain meni vikaan. Lataa sivu uudelleen aloittaaksesi peli uudelleen." );
 }
 
 $( document ).ready(postStart);
