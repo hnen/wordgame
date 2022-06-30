@@ -59,12 +59,8 @@ def guess():
         return {"status": "invalid_guess"}
     elif status == GuessResult.GAME_OVER:
         return { 'status': 'game_over', 'points': game.get_points() }
-    elif status == GuessResult.WRONG:
-        status = "try_again"
-    elif status ==  GuessResult.RIGHT:
-        status = "new_word"
-    else:
-        raise Exception(f"Invalid status: {status}")
+    elif status == GuessResult.WRONG or status == GuessResult.RIGHT:
+        status = "new_word" if status == GuessResult.RIGHT else "try_again"
 
         response = { 
             'status': status, 
