@@ -8,7 +8,6 @@ def try_login(username, password):
     acc = dao.get_account_by_username(username)
 
     if not acc or password_hash(password) != acc.password:
-        #return render_template("login.html", error="Väärä käyttäjätunnus tai salasana. Yritä kirjautua uudestaan, tai <a href='register'>luo tunnus</a>.")
         return False
 
     session = Session()

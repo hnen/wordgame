@@ -22,10 +22,6 @@ def add_words(word_list, theme_ids):
 
     accepted, rejected = validate_words(word_list)
 
-    print("ACCEPTED: ", str(accepted))
-    print("REJECTED: ", str(rejected))
-    print("theme ids: ", str(theme_ids))
-
     dao.add_words( accepted, theme_ids )
 
     return accepted, rejected
