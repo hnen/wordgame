@@ -28,14 +28,20 @@
                 <th class="align-middle" scope="row">
                     {{word.word}}
                 </th>
-                <td><form action="{{theme.id}}/remove/{{word.id}}" method="POST"><button type="submit" class="btn btn-light">Poista</button></form></td>
+                <td><form action="{{theme.id}}/remove/{{word.id}}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-light">Poista</button>
+                </form></td>
             </tr>
             {% endfor %}
         </tbody>
 
     </table>
 
-    <form action="{{theme.id}}/remove" method="POST"><button type="submit" class="btn btn-danger">Poista Teema</button></form>
+    <form action="{{theme.id}}/remove" method="POST">
+        <button type="submit" class="btn btn-danger">Poista Teema</button>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    </form>
 
 {% endblock %}
 

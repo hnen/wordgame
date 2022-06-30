@@ -23,7 +23,10 @@
                 <!-- <th class="th-lg"></th> -->
             </tr>
         </thead>
-        <form id="manage_words" action="words/remove" method="POST"><button type="submit" class="btn btn-danger">Poista Valitut</button></form>
+        <form id="manage_words" action="words/remove" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="btn btn-danger">Poista Valitut</button>
+        </form>
         <tbody class="table-group-divider">
             {% for word in words: %}
             <tr>
@@ -82,13 +85,13 @@
                 theme_id = id_parts[3]
                 if(this.checked) 
                 {                            
-                    $.post( 'words/add_theme', { 'word_id' : word_id, 'theme_id': theme_id } )
+                    $.post( 'words/add_theme', { 'word_id' : word_id, 'theme_id': theme_id, 'csrf_token': '{{csrf_token}}' } )
                         .fail( function(cb) { return function() { onFailure(); cb.checked = false; }; }(this) )
                         .done( function(r) {  $('.toast').toast('show'); } )
                 }
                 else
                 {
-                    $.post( 'words/remove_theme', { 'word_id': word_id, 'theme_id': theme_id } )
+                    $.post( 'words/remove_theme', { 'word_id': word_id, 'theme_id': theme_id, 'csrf_token': '{{csrf_token}}' } )
                         .fail( function(cb) { return function() { onFailure(); cb.checked = true; }; }(this) )
                         .done( function(r) {  $('.toast').toast('show'); } )
                 }

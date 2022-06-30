@@ -68,6 +68,7 @@
                     <div class="d-flex">
                         <form action="/auth/logout" method="POST" class="d-flex login-container input-group mx-2">
                             <button type="submit" class="btn btn-danger">Kirjaudu ulos</button>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         </form>
                     </div>
                 {% else %}
@@ -75,6 +76,7 @@
                         <input class="form-control" placeholder="Käyttäjänimi" id="account_name" name="account_name">
                         <input class="form-control" type="password" placeholder="Salasana" id="account_pass" name="account_pass">
                         <button class="btn btn-primary" type="submit">Kirjaudu</button>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     </form>
                     <span class="navbar-text"><a href="/auth/register">Luo tunnus</a></span>
                 {% endif %}

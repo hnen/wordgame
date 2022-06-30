@@ -37,6 +37,7 @@
         <tbody class="table-group-divider">
             <form action="themes/add" method="post">
                 <tr>                
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <th class="align-middle" scope="row"><input type="text" name="theme_name" class="form-control form-control-sm" id="theme_name" placeholder="Uusi teema"></th>
                     <td class="align-middle"><button type="submit" class="btn btn-light">Lisää</button></td>
                     <!-- <td><button type="button" class="btn btn-light">Hallitse</button></td> -->

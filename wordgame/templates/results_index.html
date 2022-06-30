@@ -17,7 +17,7 @@
         {% for theme in themes: %}
           <div class="row">
             <div class="col-2">
-              <form action="/results/{{theme.id}}" method="POST"><input class="btn btn-primary mb-2" type="submit" value="{{ theme.name }}"></form>
+              <form action="/results/{{theme.id}}" method="GET"><input class="btn btn-primary mb-2" type="submit" value="{{ theme.name }}"></form>
             </div>
           </div>
         {% endfor %}

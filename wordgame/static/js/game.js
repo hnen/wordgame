@@ -285,9 +285,9 @@ let game = new Game( postGuess );
 function postStart()
 {
     theme_id = $('#theme_id')[0].value;
-    $.post( "/game/start", { "theme_id": theme_id } )
+    csrf_token = $('#csrf_token')[0].value;
+    $.post( "/game/start", { "theme_id": theme_id, "csrf_token": csrf_token } )
         .done( function( data ) {
-            //$( "#text_game_status" ).text( JSON.stringify(data) );
             $( "#text_game_status" ).text( "" );
             game.updateTimeLeft(data.time_left_ms)
             game.updatePoints(data.points)
@@ -299,9 +299,9 @@ function postStart()
 
 function postGuess( guess )
 {
-    $.post( "/game/guess", { 'guess': guess } )
+    csrf_token = $('#csrf_token')[0].value;
+    $.post( "/game/guess", { 'guess': guess, "csrf_token": csrf_token } )
         .done( function( data ) {
-            //$( "#text_game_status" ).text( JSON.stringify(data) );
             $( "#text_game_status" ).text( "" );
             game.updatePoints(data.points);
             game.updateTimeLeft(0);

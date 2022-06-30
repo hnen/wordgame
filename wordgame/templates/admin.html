@@ -11,19 +11,19 @@
     <div class="mb-3 container border mb-4 pt-3 px-4 pb-3">
         <h3>Lisää sanoja</h3>
         <p>Lisää sanoja -työkalu on hyödyllinen kun haluat lisätä kerralla useita sanoja. Sanat voi lisätä suoraan tiettyihin teemoihin, tai ne voi lisätä ilman teemaa ja lajitella teemoihin toisella työkalulla.</p>
-        <form action="/admin/add" method="POST"><button class="btn btn-primary" type="submit">Lisää sanoja</button></form>
+        <form action="/admin/add" method="GET"><button class="btn btn-primary" type="submit">Lisää sanoja</button></form>
     </div>
 
     <div class="mb-3 container border mb-4 pt-3 px-4 pb-4">
         <h3>Hallitse teemoja</h3>
         <p>Tällä työkalulla voi lisätä ja poistaa teemoja, sekä tarkastella teemojen sanalistoja.</p>
-        <form action="/admin/themes" method="POST"><button class="btn btn-primary" type="submit">Hallitse teemoja</button></form>
+        <form action="/admin/themes" method="GET"><button class="btn btn-primary" type="submit">Hallitse teemoja</button></form>
     </div>
 
     <div class="mb-3 container border mb-4 pt-3 px-4 pb-4">
         <h3>Hallitse sanoja</h3>
         <p>Tällä työkalulla voi hallita yleiskuvaa kaikista pelissä olevista sanoista. Pelistä voi poistaa kokonaan tarpeettomia sanoja ja sanoja voi nopeasti lajitella eri teemoihin.</p>
-        <form action="/admin/words" method="POST"><button class="btn btn-primary" type="submit">Hallitse sanoja</button></form>
+        <form action="/admin/words" method="GET"><button class="btn btn-primary" type="submit">Hallitse sanoja</button></form>
     </div>
     </p>
 {% endblock %}
