@@ -5,7 +5,7 @@ from ..db import Dao, Word
 from .session import Session
 from ..auth import AuthSession
 
-GAME_DURATION_S = 182     # 2 seconds added as a 'buffer', it feels a bit nicer when timer stays one second at start time and one second at 00:00
+GAME_DURATION_S = 182     # 2 seconds added as a 'buffer'. UI will subtract one second from time. It feels a bit nicer when timer stays one second at start time and one second at 00:00, especially if there happens to be network lag.
 
 class GuessResult(Enum):
     INVALID = 0,
@@ -32,9 +32,9 @@ class Game:
 
         if self.get_time_left() <= 0:
             final_points = game_session.get_points()
-            dao.add_result(auth_session.get_account(), game_session.get_theme_id(), final_points)
+            if final_points > 0:
+                dao.add_result(auth_session.get_account(), game_session.get_theme_id(), final_points)
             game_session.expire()
-            #return { 'status': 'game_over', 'points': final_points }
             return GuessResult.GAME_OVER, None
 
         word_obj = self.get_current_word()
