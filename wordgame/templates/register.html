@@ -31,6 +31,7 @@
         <label class="form-check-label" for="account_admin">Ylläpitäjän oikeudet</label>
       </div>
       <button type="submit" class="btn btn-primary mb-3">Luo tunnus</button> <br>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     </form>
    </p>
 

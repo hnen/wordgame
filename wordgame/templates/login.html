@@ -24,7 +24,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary mb-3">Kirjaudu</button> <br>
-
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <a href="/auth/register">Luo tunnus</a>
       </form>
    </p>
