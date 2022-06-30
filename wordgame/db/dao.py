@@ -121,10 +121,12 @@ class Dao:
         
     def remove_theme(self, theme_id):
         query1 = "DELETE FROM word_theme WHERE theme_id=:theme_id"
-        query2 = "DELETE FROM theme WHERE id=:theme_id"
+        query2 = "DELETE FROM game_result WHERE theme_id=:theme_id"
+        query3 = "DELETE FROM theme WHERE id=:theme_id"
 
         get_session().execute( query1, {"theme_id": theme_id} )
         get_session().execute( query2, {"theme_id": theme_id} )
+        get_session().execute( query3, {"theme_id": theme_id} )
         get_session().commit()
 
         
