@@ -19,6 +19,10 @@ def try_register(username, password_text0, password_text1, is_admin):
     if not (username and password_text0 and password_text1):
         return "Virheellinen syöte"
 
+    username_error = validate_username(username)
+    if username_error:
+        return username_error
+
     if password_text0 != password_text1:
         return "Salasanat eivät täsmää."
 
@@ -31,6 +35,15 @@ def try_register(username, password_text0, password_text1, is_admin):
         return "Käyttäjätunnus on jo varattu. Kokeile rekisteröityä toisella käyttäjänimellä."
 
     dao.add_account( username, password_hash(password_text0), is_admin )
+
+    return None
+
+def validate_username(username):
+    if len(username) < 3 or len(username) > 12:
+        return "Käyttäjätunnuksen tulee olla 3-12 merkkiä pitkä."
+
+    if re.search("[^a-zåäöA_ZÅÄÖ0-9]", username):
+        return "Käyttäjätunnuksessa saa olla vain suomalaisia aakkosia ja numeroita."
 
     return None
 
