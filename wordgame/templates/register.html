@@ -10,15 +10,16 @@
   <p>
     <form action="register" method="post" class="mb-3 container border mb-4 pt-3 px-4 pb-4">
       <div>
-        <label for="account_name" class="form-label">Käyttäjänimi</label>
+        <label for="account_name" class="form-label">
+          Käyttäjänimi
+          {{ info_tooltip("username_tooltip", "Käyttäjänimen tulee olla pituudeltaan 3-12 merkkiä ja saa sisältää vain suomalaisia aakkosia." ) }}
+        </label>
         <input type="text" class="form-control" id="account_name" name="account_name">
       </div>
       <div class="mb-3">
         <label for="account_pass0" class="form-label">
-            Salasana
-            <a href="#" class="d-inline-block pt-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" id="tooltip" title="Salasanan tulee olla yli 8 merkkiä pitkä, ja sisältää ainakin kolmea seuraavasta: Pieniä kirjaimia, Isoja kirjaimia, Numeroita tai Erikoismerkkejä tai välilyöntejä.">
-                <object data="static/svg/info-svgrepo-com.svg" width="16px" height="16px"></object>
-            </a>
+            Salasana            
+            {{ info_tooltip("password_tooltip", "Salasanan tulee olla yli 8 merkkiä pitkä, ja sisältää ainakin kolmea seuraavasta: Pieniä kirjaimia, Isoja kirjaimia, Numeroita tai Erikoismerkkejä tai välilyöntejä." ) }}
         </label>
         <input type="password" class="form-control" id="account_pass0" name="account_pass0">
       </div>      
@@ -34,12 +35,6 @@
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     </form>
    </p>
-
-    <script>
-        $( document ).ready(function() {
-            const tooltip = new bootstrap.Tooltip($("#tooltip")[0], null)
-        });        
-    </script>        
 
 {% endblock %}
 
