@@ -38,7 +38,7 @@ def login():
         return render_template("login.html")
 
     username = request.form["account_name"]
-    password = request.form["account_pass"]
+    password = request.form["account_pass"]    
 
     if not try_login( username, password ):
         return render_template("login.html", error="Väärä käyttäjätunnus tai salasana. Yritä kirjautua uudestaan, tai <a href='register'>luo tunnus</a>.")

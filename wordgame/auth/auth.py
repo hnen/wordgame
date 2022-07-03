@@ -12,6 +12,7 @@ def try_login(username, password):
 
     session = Session()
     session.set_account(acc.id)
+    session.generate_csrf_token()
 
     return True
 

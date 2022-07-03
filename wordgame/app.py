@@ -2,7 +2,6 @@ from flask import Flask, request, session, abort
 from flask import render_template
 from os import getenv
 import html
-import secrets
 from . import db
 from .db import Dao
 
@@ -18,6 +17,8 @@ from . import admin
 from . import index
 from . import auth
 from . import results
+
+from .auth import AuthSession
 
 app.register_blueprint(index.bp)
 app.register_blueprint(game.bp)
@@ -38,15 +39,18 @@ def inject_themes():
 
 @app.context_processor
 def inject_csrf_token():    
-    if not(request.form and "csrf_token" in request.form):
-        session["csrf_token"] = secrets.token_hex(16)
+    auth_session = AuthSession()
+    if auth_session.is_logged_in():
+        return dict(csrf_token=auth_session.get_csrf_token())
+    else:
+        return dict()
 
-    return dict(csrf_token=session["csrf_token"])
 
 @app.before_request
 def validate_csrf_token():
-    if request.method == "POST":
-        if "csrf_token" not in request.form or len(request.form["csrf_token"]) == 0 or request.form["csrf_token"] != session["csrf_token"]:
+    auth_session = AuthSession()
+    if auth_session.is_logged_in() and request.method == "POST":
+        if "csrf_token" not in request.form or len(request.form["csrf_token"]) == 0 or request.form["csrf_token"] != auth_session.get_csrf_token():
             abort(403)
     
 
