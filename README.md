@@ -2,6 +2,21 @@
 
 Sanapelissä pelaajan on tarkoitus arvata mahdollisimman monta sanaa kolmen minuutin sisällä. Aluksi peli paljastaa vain sanan pituuden, ja jokaisen arvauksen jälkeen peli näyttää mitkä kirjaimet osuivat sanassa oikeaan, mitkä olivat oikeita kirjaimia mutta väärällä paikalla, ja mitkä kirjaimet eivät kuulu ollenkaan sanaan. Pelissä on useita teemoja joilla peliä voi pelata. Ylläpitäjä voi hallita sovelluksessa olevia teemoja ja niihin liittyviä sanoja. Sovellusta voi kokeilla osoitteessa https://wordgame-tsoha.herokuapp.com/ .
 
+## Lopullinen palautus 3.7.2022
+
+### Sovelluksen tilanne
+
+Viime välipalautuksesta sovellusta on viimeistelty lopullista arvostelua varten.
+
+Sovelluksesta on korjailtu bugeja ja käyttäjäkokemusta on viimeistelty. Yksittäisiä parannuksia on mm.
+ - Peli ei hyväksy syötteeksi virheellisiä merkkejä. Ennen peli kaatui jos käyttäjä syötti virheellisen merkin(eli jokin muu kuin suomalainen aakkonen) sanaan.
+ - Korjattu pelin ajastimen päivittäminen kun sovellus on taustalla.
+ - Korjattu teeman poistaminen. Aiemmin teemaa ei voinut poistaa jos sillä oli pelattu yksikin peli.
+ - 0 pisteen suorituksia ei kirjata tuloksiin.
+ - Paikattu CSRF-haavoittuvuudet sovelluksen lomakkeissa ja pelin POST kutsuissa.
+ - Toteutettu järkevät rajoitteet käyttäjänimelle.
+
+
 ## Välipalautus 3 19.6.2022
 
 ### Sovelluksen tilanne
